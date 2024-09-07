@@ -26,12 +26,10 @@ def search(request):
     return render(request, 'home/search.html')
 
 
+ # ABOVE ARE TROUBLESHOOTING CODES 
 
 
-
-
-
-
+ 
 def home(request):
     if request.session.has_key('is_logged'):
         return redirect('/index')
