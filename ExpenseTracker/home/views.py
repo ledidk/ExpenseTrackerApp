@@ -33,8 +33,11 @@ def search(request):
 def home(request):
     if request.session.has_key('is_logged'):
         return redirect('/index')
-    return render(request, 'home/login.html')
+    return render(request, 'login.html')
     # return HttpResponse('This is home')
+
+
+
 
 def index(request):
     if request.session.has_key('is_logged'):
