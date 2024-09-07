@@ -1,0 +1,12 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.container{
+    background-color: rgb(161, 121, 28);
+    align-items: center;
+    margin-left: 2.9em;
+}
