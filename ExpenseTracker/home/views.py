@@ -1,11 +1,76 @@
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 
+
 def home(request):
+    if request.session.has_key('is_logged'):
+        return redirect('/index')
+    
     template = loader.get_template('login.html')
     return HttpResponse(template.render())
+
+def handleSignup(request):
+    if request.method == 'POST':
+        uname = request.POST['uname']
+        fname = request.POST['fname']
+        lname = request.POST['lname']
+        email = request.POST['email']
+        pass1 = request.POST['pass1']
+        pass2 = request.POST['pass2']
+
+        try:
+            user_exists = User.objects.get(username=uname)
+            messages.error(request, "Username already taken, Try something else!!!")
+            return redirect('/register')
+        except User.DoesNotExist:
+            if len(uname) > 15:
+                messages.error(request, "Username must be max 15 characters, Please try again")
+                return redirect('/register')
+            if not uname.isalnum():
+                messages.error(request, "Username should only contain letters and numbers, Please try again")
+                return redirect('/register')
+            if pass1 != pass2:
+                messages.error(request, "Passwords do not match, Please try again")
+                return redirect('/register')
+
+            # Create the user
+            user = User.objects.create_user(uname, email, pass1)
+            user.first_name = fname
+            user.last_name = lname
+            user.email = email
+            user.save()
+
+            # Create the UserProfile (assuming your model needs this)
+            profile = UserProfile(user=user)
+            profile.save()
+
+            messages.success(request, "Your account has been successfully created")
+            return redirect('/login')  # Redirect to login after successful registration
+
+    # If it's a GET request, render the registration page
+    return render(request, 'register.html')
+
+def handlelogin(request):
+    if request.method == 'POST':
+        loginuname = request.POST.get("loginuname")
+        loginpassword1 = request.POST.get("loginpassword1")
+        
+        user = authenticate(username=loginuname, password=loginpassword1)
+        
+        if user is not None:
+            dj_login(request, user)
+            request.session['is_logged'] = True
+            request.session["user_id"] = user.id
+            
+            messages.success(request, "Successfully logged in")
+            return redirect('/index')
+        else:
+            messages.error(request, "Invalid Credentials, Please try again")
+            return redirect('/login')
+    
+    return render(request, 'login.html')
 
 
 """

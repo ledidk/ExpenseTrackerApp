@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-
+    <title>Register</title>
     <style>
         body {
             display: flex;
@@ -75,35 +74,37 @@
 <body>
     <div class="main">
         <h1>Expenses Tracker</h1>
-        <h3>Enter your login credentials</h3>
-        
-        <!-- Login form -->
-        <form method="POST" action="{% url 'handlelogin' %}">
+        <h3>Register</h3>
+        <!-- Form for user registration -->
+        <form method="POST" action="{% url 'handleSignup' %}">
             {% csrf_token %}
             
-            <label for="loginuname">Username:</label>
-            <input type="text" 
-                   id="loginuname" 
-                   name="loginuname" 
-                   placeholder="Enter your Username" required>
+            <label for="fname">First Name:</label>
+            <input type="text" id="fname" name="fname" placeholder="Enter your First Name" required>
 
-            <label for="loginpassword1">Password:</label>
-            <input type="password"
-                   id="loginpassword1" 
-                   name="loginpassword1"
-                   placeholder="Enter your Password" required>
+            <label for="lname">Last Name:</label>
+            <input type="text" id="lname" name="lname" placeholder="Enter your Last Name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your Email" required>
+
+            <label for="uname">Username:</label>
+            <input type="text" id="uname" name="uname" placeholder="Create your Username" required>
+
+            <label for="pass1">Password:</label>
+            <input type="password" id="pass1" name="pass1" placeholder="Create your Password" required>
+
+            <label for="pass2">Confirm Password:</label>
+            <input type="password" id="pass2" name="pass2" placeholder="Confirm your Password" required>
 
             <div class="wrap">
-                <button type="submit">Login</button>
+                <button type="submit">Register</button>
             </div>
         </form>
 
-        <p>
-            <a href="#" style="text-decoration: none;">Forgot password?</a>
+        <p>Already have an account? 
+            <a href="{% url 'handlelogin' %}" style="text-decoration: none;">Login here</a>
         </p>
-        <p>Not registered? 
-            <a href="{% url 'handleSignup' %}" style="text-decoration: none;">Create an account</a>
-        </p>             
     </div>
 </body>
 </html>
