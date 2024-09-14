@@ -70,13 +70,31 @@
             justify-content: center;
             align-items: center;
         }
+
+
+
+       .message.error{
+        background-color: #f8d7da;
+        color: #721c24;
+       }
     </style>
 </head>
 <body>
     <div class="main">
         <h1>Expenses Tracker</h1>
         <h3>Enter your login credentials</h3>
-        
+
+                <!-- Display messages -->
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+             </div>
+        {% endif %}
+
         <!-- Login form -->
         <form method="POST" action="{% url 'handlelogin' %}">
             {% csrf_token %}

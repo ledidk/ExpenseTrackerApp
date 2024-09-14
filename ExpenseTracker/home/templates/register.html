@@ -69,12 +69,32 @@
             justify-content: center;
             align-items: center;
         }
+        
+
+       #message_error{
+        display: block;
+        background-color: #f8d7da;
+        color: #721c24;
+       }
     </style>
 </head>
 <body>
     <div class="main">
         <h1>Expenses Tracker</h1>
         <h3>Register</h3>
+
+
+                        <!-- Display messages -->
+                        {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                                <div id="message_error" class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
         <!-- Form for user registration -->
         <form method="POST" action="{% url 'handleSignup' %}">
             {% csrf_token %}

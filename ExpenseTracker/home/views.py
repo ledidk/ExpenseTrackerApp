@@ -2,6 +2,11 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
+from django.contrib.auth import authenticate, login as dj_login, logout
+from django.contrib import messages
+from django.contrib.auth.models import User
+from .models import UserProfile
+
 
 
 def home(request):
@@ -68,10 +73,8 @@ def handlelogin(request):
             return redirect('/index')
         else:
             messages.error(request, "Invalid Credentials, Please try again")
-            return redirect('/login')
-    
-    return render(request, 'login.html')
-
+            return render(request, 'login.html')
+    return render(request, 'login.html', {'messages': messages.get_messages(request)})
 
 """
 
