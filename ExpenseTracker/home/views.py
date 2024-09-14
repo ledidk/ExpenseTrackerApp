@@ -7,14 +7,28 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import UserProfile
 
-
+"""
+# Home view that checks if the user is logged in
+def home(request):
+    # Check if user is authenticated
+    if request.user.is_authenticated:
+        # If the user is logged in, redirect to the home page (index.html)
+        template = loader.get_template('index.html')
+        return HttpResponse(template.render())
+    else:
+        # If the user is not logged in, redirect to the login page
+        return redirect('handlelogin')
+"""
 
 def home(request):
     if request.session.has_key('is_logged'):
-        return redirect('/index')
+        """return redirect('/index') """
+        template = loader.get_template('index.html')
+        return HttpResponse(template.render())
     
     template = loader.get_template('login.html')
     return HttpResponse(template.render())
+
 
 def handleSignup(request):
     if request.method == 'POST':
@@ -24,40 +38,59 @@ def handleSignup(request):
         email = request.POST['email']
         pass1 = request.POST['pass1']
         pass2 = request.POST['pass2']
+        errors = []
 
         try:
             user_exists = User.objects.get(username=uname)
-            messages.error(request, "Username already taken, Try something else!!!")
-            return redirect('/register')
+            errors.append("Username already taken, try something else.")
         except User.DoesNotExist:
             if len(uname) > 15:
-                messages.error(request, "Username must be max 15 characters, Please try again")
-                return redirect('/register')
+                errors.append("Username must be max 15 characters.")
             if not uname.isalnum():
-                messages.error(request, "Username should only contain letters and numbers, Please try again")
-                return redirect('/register')
+                errors.append("Username should only contain letters and numbers.")
             if pass1 != pass2:
-                messages.error(request, "Passwords do not match, Please try again")
-                return redirect('/register')
+                errors.append("Passwords do not match.")
+            if len(pass1) < 8:
+                errors.append("Password should be at least 8 characters long.")
 
-            # Create the user
-            user = User.objects.create_user(uname, email, pass1)
-            user.first_name = fname
-            user.last_name = lname
-            user.email = email
-            user.save()
+        # If there are any errors, return to the register page with error messages and previous input
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            # Pass the previous input back to the template
+            return render(request, 'register.html', {
+                'fname': fname,
+                'lname': lname,
+                'email': email,
+                'uname': uname,
+            })
+        
+        # Create the user if there are no errors
+        user = User.objects.create_user(uname, email, pass1)
+        user.first_name = fname
+        user.last_name = lname
+        user.save()
 
-            # Create the UserProfile (assuming your model needs this)
-            profile = UserProfile(user=user)
-            profile.save()
 
-            messages.success(request, "Your account has been successfully created")
-            return redirect('/login')  # Redirect to login after successful registration
+        # Optionally create the UserProfile
+        profile = UserProfile(user=user)
+        profile.save()
+
+        # Log the user in
+        dj_login(request, user)
+        request.session['is_logged'] = True
+        request.session["user_id"] = user.id
+
+        messages.success(request, "Your account has been successfully created.")
+        template = loader.get_template('index.html')
+        return HttpResponse(template.render())
 
     # If it's a GET request, render the registration page
     return render(request, 'register.html')
 
+
 def handlelogin(request):
+    messages.error(request, '')
     if request.method == 'POST':
         loginuname = request.POST.get("loginuname")
         loginpassword1 = request.POST.get("loginpassword1")
@@ -70,9 +103,11 @@ def handlelogin(request):
             request.session["user_id"] = user.id
             
             messages.success(request, "Successfully logged in")
-            return redirect('/index')
+            template = loader.get_template('index.html')
+            return HttpResponse(template.render())
+        
         else:
-            messages.error(request, "Invalid Credentials, Please try again")
+            messages.error(request, "Username or password maybe invalid, Please try again")
             return render(request, 'login.html')
     return render(request, 'login.html', {'messages': messages.get_messages(request)})
 
