@@ -16,13 +16,13 @@ def home(request):
         template = loader.get_template('index.html')
         return HttpResponse(template.render())
     else:
-        # If the user is not logged in, redirect to the login page
+        # If the user is not logged in, redirect to the login page 
         return redirect('handlelogin')
 """
 
 def home(request):
     if request.session.has_key('is_logged'):
-        """return redirect('/index') """
+     # return redirect('/index')
         template = loader.get_template('index.html')
         return HttpResponse(template.render())
     
@@ -30,63 +30,201 @@ def home(request):
     return HttpResponse(template.render())
 
 
-def handleSignup(request):
+def handleSignupStep1(request):
+    # Retrieve data from the session, if available, to prepopulate the form
+    uname = request.session.get('uname', '')
+    pass1 = request.session.get('pass1', '')
+
     if request.method == 'POST':
+        if 'cancel' in request.POST:
+            return redirect('home')  # Redirect to home or login on cancel
+
         uname = request.POST['uname']
-        fname = request.POST['fname']
-        lname = request.POST['lname']
-        email = request.POST['email']
         pass1 = request.POST['pass1']
         pass2 = request.POST['pass2']
         errors = []
 
-        try:
-            user_exists = User.objects.get(username=uname)
+        if User.objects.filter(username=uname).exists():
             errors.append("Username already taken, try something else.")
-        except User.DoesNotExist:
-            if len(uname) > 15:
-                errors.append("Username must be max 15 characters.")
-            if not uname.isalnum():
-                errors.append("Username should only contain letters and numbers.")
-            if pass1 != pass2:
-                errors.append("Passwords do not match.")
-            if len(pass1) < 8:
-                errors.append("Password should be at least 8 characters long.")
+        if len(uname) > 15:
+            errors.append("Username must be max 15 characters.")
+        if pass1 != pass2:
+            errors.append("Passwords do not match.")
+        if len(pass1) < 8:
+            errors.append("Password should be at least 8 characters long.")
 
-        # If there are any errors, return to the register page with error messages and previous input
         if errors:
             for error in errors:
                 messages.error(request, error)
-            # Pass the previous input back to the template
-            return render(request, 'register.html', {
-                'fname': fname,
-                'lname': lname,
-                'email': email,
-                'uname': uname,
-            })
+            return render(request, 'register_step1.html', {'uname': uname, 'pass1': pass1})
+
+        # Store data in session
+        request.session['uname'] = uname
+        request.session['pass1'] = pass1
+        return redirect('register_step2')
+
+    return render(request, 'register_step1.html', {'uname': uname, 'pass1': pass1})
+    if request.method == 'POST':
+        if 'cancel' in request.POST:
+            return redirect('home')  # Redirect to home or login on cancel
+
+        uname = request.POST['uname']
+        pass1 = request.POST['pass1']
+        pass2 = request.POST['pass2']
+        errors = []
+
+        if User.objects.filter(username=uname).exists():
+            errors.append("Username already taken, try something else.")
+        if len(uname) > 15:
+            errors.append("Username must be max 15 characters.")
+        if pass1 != pass2:
+            errors.append("Passwords do not match.")
+        if len(pass1) < 8:
+            errors.append("Password should be at least 8 characters long.")
         
-        # Create the user if there are no errors
-        user = User.objects.create_user(uname, email, pass1)
-        user.first_name = fname
-        user.last_name = lname
-        user.save()
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return redirect('register_step1')
+
+        request.session['uname'] = uname
+        request.session['pass1'] = pass1
+        return redirect('register_step2')
+
+    return render(request, 'register_step1.html')
+
+def handleSignupStep2(request):
+    # Retrieve data from the session, if available, to prepopulate the form
+    fname = request.session.get('fname', '')
+    lname = request.session.get('lname', '')
+    email = request.session.get('email', '')
+
+    if request.method == 'POST':
+        if 'back' in request.POST:
+            return redirect('register_step1')
+        if 'cancel' in request.POST:
+            return redirect('home')  # Redirect to home on cancel
+
+        fname = request.POST['fname']
+        lname = request.POST['lname']
+        email = request.POST['email']
+
+        # Store data in session
+        request.session['fname'] = fname
+        request.session['lname'] = lname
+        request.session['email'] = email
+        return redirect('register_step3')
+
+    return render(request, 'register_step2.html', {'fname': fname, 'lname': lname, 'email': email})
+    if request.method == 'POST':
+        if 'back' in request.POST:
+            return redirect('register_step1')
+        if 'cancel' in request.POST:
+            return redirect('home')  # Redirect to home on cancel
+
+        fname = request.POST['fname']
+        lname = request.POST['lname']
+        email = request.POST['email']
+
+        request.session['fname'] = fname
+        request.session['lname'] = lname
+        request.session['email'] = email
+        return redirect('register_step3')
+
+    return render(request, 'register_step2.html')
 
 
-        # Optionally create the UserProfile
-        profile = UserProfile(user=user)
+def handleSignupStep3(request):
+    # Retrieve data from the session, if available, to prepopulate the form
+    profession = request.session.get('profession', '')
+    savings = request.session.get('savings', '')
+    income = request.session.get('income', '')
+
+    if request.method == 'POST':
+        if 'back' in request.POST:
+            return redirect('register_step2')
+        if 'cancel' in request.POST:
+            return redirect('home')  # Redirect to home on cancel
+
+        profession = request.POST['profession']
+        savings = request.POST['savings']
+        income = request.POST['income']
+
+        # Retrieve session data for user creation
+        uname = request.session['uname']
+        pass1 = request.session['pass1']
+        fname = request.session['fname']
+        lname = request.session['lname']
+        email = request.session['email']
+
+        # Store profession-related data in session
+        request.session['profession'] = profession
+        request.session['savings'] = savings
+        request.session['income'] = income
+
+        # Create User and UserProfile
+        user = User.objects.create_user(username=uname, password=pass1, email=email, first_name=fname, last_name=lname)
+        profile = UserProfile(user=user, profession=profession, Savings=savings, income=income)
         profile.save()
 
-        # Log the user in
         dj_login(request, user)
         request.session['is_logged'] = True
-        request.session["user_id"] = user.id
+        return redirect('register_step4')
 
-        messages.success(request, "Your account has been successfully created.")
-        template = loader.get_template('index.html')
-        return HttpResponse(template.render())
+    return render(request, 'register_step3.html', {'profession': profession, 'savings': savings, 'income': income})
 
-    # If it's a GET request, render the registration page
-    return render(request, 'register.html')
+    if request.method == 'POST':
+        if 'back' in request.POST:
+            return redirect('register_step2')
+        if 'cancel' in request.POST:
+            return redirect('home')  # Redirect to home on cancel
+        
+        profession = request.POST['profession']
+        savings = request.POST['Savings']
+        income = request.POST['income']
+
+        uname = request.session['uname']
+        pass1 = request.session['pass1']
+        fname = request.session['fname']
+        lname = request.session['lname']
+        email = request.session['email']
+
+        user = User.objects.create_user(username=uname, password=pass1, email=email, first_name=fname, last_name=lname)
+        profile = UserProfile(user=user, profession=profession, Savings=savings, income=income)
+        profile.save()
+
+        dj_login(request, user)
+        request.session['is_logged'] = True
+        return redirect('register_step4')
+
+    return render(request, 'register_step3.html')
+
+def register_success(request):
+    # Retrieve the first name from the session
+    fname = request.session.get('fname', '')
+
+    if request.method == 'POST':
+        if 'back' in request.POST:
+            return redirect('register_step3')
+        if 'cancel' in request.POST:
+            return redirect('home')  # Redirect to home on cancel
+
+        # Final submission logic here
+        messages.success(request, "Registration complete!")
+        return redirect('home')  # Redirect to home or another page after success
+
+    return render(request, 'register_step4.html', {'fname': fname})
+    if request.method == 'POST':
+        if 'back' in request.POST:
+            return redirect('register_step3')
+        if 'cancel' in request.POST:
+            return redirect('home')  # Redirect to home on cancel
+
+        # Final submission logic here
+        messages.success(request, "Registration complete!")
+        return redirect('home')  # Redirect to home or another page after success
+
+    return render(request, 'register_step4.html')
 
 
 def handlelogin(request):

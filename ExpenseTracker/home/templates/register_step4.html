@@ -1,0 +1,29 @@
+<!-- register_step4.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Created</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <form method="POST" action="{% url 'register_step4' %}">
+        {% csrf_token %}
+    
+        <!-- Dynamic greeting with user's first name -->
+        <h1>Welcome, {{ fname }}!</h1>
+        <h3>Account Created Successfully!</h3>
+    
+        <p>Your account has been successfully created. Click the button below to continue to the home page.</p>
+    
+        <!-- Buttons for back, cancel, and submit -->
+        <button type="submit" name="back">Back</button>
+        <button type="submit" name="cancel">Cancel</button>
+        <button type="submit">Submit</button>
+    </form>
+    
+</body>
+</html>
