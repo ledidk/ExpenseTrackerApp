@@ -1,4 +1,3 @@
-<!-- register_step3.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,21 +14,30 @@
 
         <form method="POST" action="{% url 'register_step3' %}">
             {% csrf_token %}
-        
+
+            <!-- Profession Dropdown -->
             <label for="profession">Profession:</label>
-            <input type="text" id="profession" name="profession" value="{{ profession }}" required>
-        
+            <select class="profession" id="profession" name="profession" required>
+                {% for key, value in profession_choices %}
+                    <option value="{{ key }}" {% if key == profession %}selected{% endif %}>
+                        {{ value }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <!-- Savings Input -->
             <label for="savings">Savings:</label>
             <input type="number" id="savings" name="savings" value="{{ savings }}" required>
-        
+
+            <!-- Income Input -->
             <label for="income">Income:</label>
             <input type="number" id="income" name="income" value="{{ income }}" required>
-        
+
+            <!-- Buttons -->
             <button type="submit" name="back">Back</button>
             <button type="submit" name="cancel">Cancel</button>
             <button type="submit">Next</button>
         </form>
-        
     </div>
 </body>
 </html>

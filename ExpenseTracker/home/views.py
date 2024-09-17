@@ -8,6 +8,26 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 
 """
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
+from django.http import HttpResponseNotFound
+
+
+class YourProtectedView(LoginRequiredMixin, TemplateView):
+    template_name = 'your_template.html'
+    login_url = '/login/'  # You can specify the URL to redirect to
+
+def custom_page_not_found_view(request, exception):
+    return redirect('login')  # Redirect to the login page or any other view
+
+def custom_404(request, exception=None):
+    # Optionally, you can add conditions to redirect or handle specific cases
+    return render(request, '404.html', status=404)
+"""
+
+
+
+"""
 # Home view that checks if the user is logged in
 def home(request):
     # Check if user is authenticated
@@ -133,8 +153,43 @@ def handleSignupStep2(request):
 
     return render(request, 'register_step2.html')
 
-
 def handleSignupStep3(request):
+    if request.method == 'POST':
+        if 'back' in request.POST:
+            return redirect('register_step2')
+        if 'cancel' in request.POST:
+            return redirect('home')  # Redirect to home on cancel
+
+        profession = request.POST['profession']
+        savings = request.POST['savings']
+        income = request.POST['income']
+
+        # Save the data in the session
+        request.session['profession'] = profession
+        request.session['savings'] = savings
+        request.session['income'] = income
+
+        # Retrieve other necessary session data
+        uname = request.session['uname']
+        pass1 = request.session['pass1']
+        fname = request.session['fname']
+        lname = request.session['lname']
+        email = request.session['email']
+
+        # Create the User and UserProfile object
+        user = User.objects.create_user(username=uname, password=pass1, email=email, first_name=fname, last_name=lname)
+        profile = UserProfile(user=user, profession=profession, Savings=savings, income=income)
+        profile.save()
+
+        # Log in the user
+        dj_login(request, user)
+        request.session['is_logged'] = True
+        return redirect('register_step4')
+
+    # Pass profession choices to the template
+    profession_choices = UserProfile._meta.get_field('profession').choices
+    return render(request, 'register_step3.html', {'profession_choices': profession_choices})
+
     # Retrieve data from the session, if available, to prepopulate the form
     profession = request.session.get('profession', '')
     savings = request.session.get('savings', '')
@@ -226,7 +281,6 @@ def register_success(request):
 
     return render(request, 'register_step4.html')
 
-
 def handlelogin(request):
     messages.error(request, '')
     if request.method == 'POST':
@@ -248,6 +302,62 @@ def handlelogin(request):
             messages.error(request, "Username or password maybe invalid, Please try again")
             return render(request, 'login.html')
     return render(request, 'login.html', {'messages': messages.get_messages(request)})
+
+# Step 1: Enter username
+def reset_password_step1(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        try:
+            user = User.objects.get(username=username)
+            # If valid, proceed to step 2
+            return redirect('reset_password_step2')
+        except User.DoesNotExist:
+            # If username is invalid, show an error
+            messages.error(request, 'Username does not exist. Please try again.')
+    return render(request, 'reset_password_step1.html')
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        try:
+            user = User.objects.get(username=username)
+            request.session['reset_username'] = username
+            return redirect('reset_password_step2')
+        except User.DoesNotExist:
+            messages.error(request, 'Username not found.')
+    
+    return render(request, 'reset_password_step1.html')
+
+# views.py
+# Step 2: Enter email and create a new password
+def reset_password_step2(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        user = User.objects.filter(email=email).first()
+        
+        # Check if email exists and belongs to the user
+        if user is None:
+            messages.error(request, 'Email does not match any account.')
+            return redirect('reset_password_step2')
+        
+        # Check if passwords match
+        if new_password != confirm_password:
+            messages.error(request, 'Passwords do not match. Please try again.')
+            return redirect('reset_password_step2')
+
+        # If everything is valid, save the new password
+        user.set_password(new_password)
+        user.save()
+        messages.success(request, 'Password reset successfully.')
+        return redirect('reset_password_step3')
+        
+    return render(request, 'reset_password_step2.html')
+
+# views.py
+def reset_password_step3(request):
+    return render(request, 'reset_password_step3.html')
+
 
 """
 

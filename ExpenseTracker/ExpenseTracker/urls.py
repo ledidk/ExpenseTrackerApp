@@ -18,6 +18,15 @@ from django.contrib import admin
 from django.urls import include, path
 from home import views
 
+"""
+from django.conf.urls import handler404
+from home.views import custom_page_not_found_view
+from django.conf.urls.static import static
+
+handler404 = 'home.views.custom_page_not_found_view'
+
+"""
+
 
 urlpatterns = [
     path('', views.home, name='home'),

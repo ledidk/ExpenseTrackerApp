@@ -46,10 +46,10 @@
         </form>
 
         <p>
-            <a href="#" style="text-decoration: none;">Forgot password?</a>
+            <a href="{% url 'reset_password_step1' %}"  style="text-decoration: none;">Forgot password?</a>
         </p>
         <p>Not registered? 
-            <a href="{% url 'handleSignup' %}" style="text-decoration: none;">Create an account</a>
+            <a href="{% url 'register_step1' %}" style="text-decoration: none;">Create an account</a>
         </p>             
     </div>
 </body>
