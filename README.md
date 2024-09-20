@@ -21,4 +21,4 @@ python manage.py migrate
 
 # running app
 
-✗ python manage.py runserver
+python manage.py runserver
