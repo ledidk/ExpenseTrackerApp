@@ -27,7 +27,6 @@ handler404 = 'home.views.custom_page_not_found_view'
 
 """
 
-
 urlpatterns = [
     path('', views.home, name='home'),
     path('home/', views.home, name='home'),

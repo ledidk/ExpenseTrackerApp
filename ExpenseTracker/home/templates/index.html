@@ -1,17 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>index</title>
-    <style>
-        body{
-            background-color: black;
-            color: #4e4d4d;
-        }
-    </style>
+    <title>Books List</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <H1 style="display: flex; align-items: center; margin-left: 40%; margin-top: 20%;"> welcome to the home page</H1>
+    <h1>Books Distribution Expenses</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Subtitle</th>
+                <th>Authors</th>
+                <th>Publisher</th>
+                <th>Published Date</th>
+                <th>Category</th>
+                <th>Distribution Expense ($)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.isbn }}</td>
+                <td>{{ book.title }}</td>
+                <td>{{ book.subtitle }}</td>
+                <td>{{ book.authors.all|join:", " }}</td>
+                <td>{{ book.publisher.name }}</td>
+                <td>{{ book.published_date }}</td>
+                <td>{{ book.category }}</td>
+                <td>{{ book.distribution_expense }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No books available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>        
+    </table>
 </body>
 </html>

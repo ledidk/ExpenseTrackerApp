@@ -58,3 +58,30 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+
+class Author(models.Model):
+    name = models.CharField(max_length=255)
+    
+    def __str__(self):
+        return self.name
+
+class Publisher(models.Model):
+    name = models.CharField(max_length=255)
+    
+    def __str__(self):
+        return self.name
+
+class Book(models.Model):
+    isbn = models.CharField(max_length=13)
+    title = models.CharField(max_length=255)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
+    authors = models.CharField(max_length=255)
+    publisher = models.CharField(max_length=255)
+    publish_date = models.DateField()
+    category = models.CharField(max_length=100)
+    distribution_expense = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return self.title
+

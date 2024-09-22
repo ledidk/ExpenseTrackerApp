@@ -3,9 +3,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth import authenticate, login as dj_login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import UserProfile
+from .models import Book
 
 """
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -20,9 +22,9 @@ class YourProtectedView(LoginRequiredMixin, TemplateView):
 def custom_page_not_found_view(request, exception):
     return redirect('login')  # Redirect to the login page or any other view
 
-def custom_404(request, exception=None):
-    # Optionally, you can add conditions to redirect or handle specific cases
+def custom_404(request, exception):
     return render(request, '404.html', status=404)
+
 """
 
 
@@ -46,8 +48,10 @@ def home(request):
         template = loader.get_template('index.html')
         return HttpResponse(template.render())
     
-    template = loader.get_template('login.html')
-    return HttpResponse(template.render())
+    books = Book.objects.all()
+    return render(request, 'index.html', {'books': books})
+    """template = loader.get_template('login.html')
+    return HttpResponse(template.render())"""
 
 
 def handleSignupStep1(request):
@@ -357,6 +361,18 @@ def reset_password_step2(request):
 # views.py
 def reset_password_step3(request):
     return render(request, 'reset_password_step3.html')
+
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+def book_list(request):
+    books = Book.objects.all()
+    logger.debug(f"Number of books retrieved: {books.count()}")
+    return render(request, 'index.html', {'books': books})
+
+
 
 
 """
