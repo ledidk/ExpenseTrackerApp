@@ -45,13 +45,10 @@ def home(request):
 def home(request):
     if request.session.has_key('is_logged'):
      # return redirect('/index')
-        template = loader.get_template('index.html')
-        return HttpResponse(template.render())
+        books = Book.objects.all()
+        return render(request, 'index.html', {'books': books})
     
-    books = Book.objects.all()
-    return render(request, 'index.html', {'books': books})
-    """template = loader.get_template('login.html')
-    return HttpResponse(template.render())"""
+    return HttpResponse("you are not logged in")
 
 
 def handleSignupStep1(request):
