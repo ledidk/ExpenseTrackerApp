@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books List</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h1>Books Distribution Expenses</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Subtitle</th>
+                <th>Authors</th>
+                <th>Publisher</th>
+                <th>Published Date</th>
+                <th>Category</th>
+                <th>Distribution Expense ($)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.isbn }}</td>
+                <td>{{ book.title }}</td>
+                <td>{{ book.subtitle }}</td>
+                <td>{{ book.authors}}</td>
+                <td>{{ book.publisher }}</td>
+                <td>{{ book.publish_date }}</td>
+                <td>{{ book.category }}</td>
+                <td>{{ book.distribution_expense }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No books available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>        
+    </table>
+</body>
+</html>

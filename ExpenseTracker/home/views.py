@@ -50,7 +50,7 @@ def home(request):
         books = Book.objects.all()
         return render(request, 'index.html', {'books': books})
     
-    return HttpResponse("you are not logged in")
+    return render(request, 'index.html')
 
 
 def handleSignupStep1(request):
@@ -386,7 +386,7 @@ def book_list(request):
         response += f"- {category}\n"
     #return HttpResponse(response, content_type='text/plain')
 
-    return render(request, 'index.html', {'books': books})
+    return render(request, 'books.html', {'books': books})
     #return HttpResponse (authors_str)
     #return HttpResponse(published_dates_str)
     #return HttpResponse(", ".join(field_names))

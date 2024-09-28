@@ -1,45 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Books List</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Books Manager</title>
+    <style>
+        /* Global reset */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Ensure body takes up the full height of the viewport */
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border-bottom: 1px solid #ccc;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        header nav {
+            display: flex;
+            align-items: center;
+        }
+
+        header a {
+            margin-right: 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        header button {
+            padding: 8px 12px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Main content wrapper */
+        #main-content {
+            display: flex;
+            flex: 1;
+            height: 100%;
+        }
+
+        /* Leftbox (Menu) */
+        #leftbox {
+            flex: 0.15; /* Reduced size to half its current size */
+            padding: 20px;
+            background-color: brown;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-button {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .menu-button i {
+            margin-right: 10px;
+        }
+
+        /* Dynamic content areas (Dashboard, Books, Profile) */
+        .content {
+            flex: 1;
+            padding: 20px;
+            display: none; /* Hide by default */
+        }
+
+        .dashboard-layout {
+            flex: 1;
+            display: flex;
+        }
+
+
+        /* Middlebox (Dashboard) */
+        #middlebox {
+            flex: 3; /* Return this to the original size */
+            padding: 0; /* Remove padding so there's no space around the header */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Rightbox (Display Data) */
+        #rightbox {
+            flex: 1.2; /* Same size as before */
+            padding: 0; /* Remove padding */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Headers inside the boxes */
+        .box-header {
+            width: 100%;
+            background-color: #333; /* You can adjust this */
+            color: white;
+            text-align: center;
+            padding: 0; /* Set padding to 0 to eliminate any space */
+            margin: 0; /* Set margin to 0 to eliminate any space */
+            font-size: 18px;
+        }
+
+        /* Main content inside the middle and right boxes */
+        .box-content {
+            flex: 1; /* Fill the remaining space under the header */
+            padding: 20px; /* Maintain padding for content */
+            overflow-y: auto; /* Add scroll if content overflows */
+        }
+
+
+                /* Main content inside the middle and right boxes */
+        .box-content {
+            flex: 1; /* Fill the remaining space under the header */
+            padding: 20px;
+            overflow-y: auto; /* Add scroll if content overflows */
+        }
+
+        /* Middlebox styling */
+        #middlebox .box-content {
+            background-color: aqua;
+            color: #333;
+        }
+
+        /* Rightbox styling */
+        #rightbox .box-content {
+            background-color: burlywood;
+            color: #333;
+        }
+
+        /* Show the content dynamically */
+        .active {
+            display: block;
+        }
+
+        /* Footer inside the leftbox */
+        #leftbox-footer {
+            text-align: center;
+            padding: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        #leftbox-footer button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 8px;
+            width: 100%;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+
+        #leftbox-footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* Books page header */
+        .books-header, .profile-header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* Books Page */
+        #books-page .books-actions {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        #books-page .books-actions button {
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Profile Page */
+        #profile-page .profile-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        #profile-page .profile-form input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        #profile-page .profile-form button {
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Books Distribution Expenses</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ISBN</th>
-                <th>Title</th>
-                <th>Subtitle</th>
-                <th>Authors</th>
-                <th>Publisher</th>
-                <th>Published Date</th>
-                <th>Category</th>
-                <th>Distribution Expense ($)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for book in books %}
-            <tr>
-                <td>{{ book.isbn }}</td>
-                <td>{{ book.title }}</td>
-                <td>{{ book.subtitle }}</td>
-                <td>{{ book.authors}}</td>
-                <td>{{ book.publisher }}</td>
-                <td>{{ book.publish_date }}</td>
-                <td>{{ book.category }}</td>
-                <td>{{ book.distribution_expense }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8">No books available.</td>
-            </tr>
-            {% endfor %}
-        </tbody>        
-    </table>
+
+    <!-- Header Section -->
+    <header>
+        <div class="logo">Books Manager</div>
+        <nav>
+            <a href="#">Circle Image Here</a>
+            <button>Logged in as: Name</button>
+        </nav>
+    </header>
+
+    <!-- Main Content Section -->
+    <div id="main-content">
+        <!-- Leftbox (Menu) -->
+        <div id="leftbox">
+            <div>
+                <button class="menu-button" onclick="showPage('dashboard-page')">
+                    <i>🏠</i> Dashboard
+                </button>
+                <button class="menu-button" onclick="showPage('books-page')">
+                    <i>📚</i> Books
+                </button>
+                <button class="menu-button" onclick="showPage('profile-page')">
+                    <i>👤</i> Profile
+                </button>
+            </div>
+            <!-- Footer -->
+            <div id="leftbox-footer">
+                <button>Logged in as: Name</button>
+                <p>Paul Prince Mugisha</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Page with Middle and Right Boxes -->
+        <div id="dashboard-page" class="content active">
+            <div class="dashboard-layout">
+                <div id="middlebox">
+                    <!-- Middlebox Header -->
+                    <div class="box-header books-header">
+                        Dashboard Title
+                    </div>
+                    <!-- Middlebox Content -->
+                    <div class="box-content">
+                        The course focuses on various MCQ's & Coding
+                        questions likely to be asked in interviews.
+                        Make your upcoming placement season efficient
+                        and successful.
+                    </div>
+                </div>
+        <!-- Rightbox (Display Data) -->
+        <div id="rightbox">
+            <!-- Rightbox Header -->
+            <div class="box-header books-header">
+                Data Title
+            </div>
+            <!-- Rightbox Content -->
+            <div class="box-content">
+                Any geeks can help other geeks by writing
+                articles on the GeeksforGeeks platform, publishing
+                articles after a few review steps.
+            </div>
+        </div>
+            </div>
+        </div>
+
+        <!-- Books Page -->
+        <div id="books-page" class="content">
+            <h2 class="books-header">Books Page</h2>
+            <div class="books-actions">
+                <button>Manage Books</button>
+                <button>Search Books</button>
+                <button>Category</button>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profile-page" class="content">
+            <h2 class="profile-header">Profile Page</h2>
+            <div class="profile-form">
+                <input type="text" placeholder="Edit Username">
+                <input type="email" placeholder="Edit Email">
+                <input type="password" placeholder="Edit Password">
+                <button>Update Profile</button>
+                <button>Logout</button>
+                <button>Upload Profile Picture</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript to Handle Page Navigation -->
+    <script>
+        // Function to switch between pages
+        function showPage(pageId) {
+            // Hide all content sections
+            document.querySelectorAll('.content').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show the selected content section
+            document.getElementById(pageId).classList.add('active');
+        }
+    </script>
+
 </body>
 </html>
