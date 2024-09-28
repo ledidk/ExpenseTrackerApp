@@ -18,7 +18,7 @@ class Command(BaseCommand):
         """
         df['published_date'] = pd.to_datetime(df['published_date'], format='%d/%m/%Y', errors='coerce').dt.date
         """
-        df['published_date'] = pd.to_datetime(df['published_date'].astype(str).str.strip(), format='%d/%m/%Y', errors='coerce').dt.date
+        df['publish_date'] = pd.to_datetime(df['publish_date'].astype(str).str.strip(), format='%d/%m/%Y', errors='coerce').dt.date
 
 
         print(df)
@@ -39,7 +39,7 @@ class Command(BaseCommand):
                 subtitle=row['subtitle'],
                 authors=row['authors'],
                 publisher=row['publisher'],
-                publish_date=row['published_date'],
+                publish_date=row['publish_date'],
                 category=row['category'],
                 distribution_expense=row['distribution_expense']
             )

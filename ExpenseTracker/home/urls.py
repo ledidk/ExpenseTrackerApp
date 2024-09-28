@@ -8,11 +8,9 @@ from home.views import custom_page_not_found_view
 handler404 = 'home.views.custom_page_not_found_view'
 """
 
-
 urlpatterns = [
     path(' ', views.home, name='home'),
     path('index/', views.home, name='home'),
-    path('books/', views.book_list, name='book_list'),
     path('books/', views.book_list, name='book_list'),
     path('register', views.handleSignupStep1, name='register_step1'),
     path('register/step1/', views.handleSignupStep1, name='register_step1'),

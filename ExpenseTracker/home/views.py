@@ -3,11 +3,13 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth import authenticate, login as dj_login, logout
+import logging
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import UserProfile
 from .models import Book
+
 
 """
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -360,14 +362,36 @@ def reset_password_step3(request):
     return render(request, 'reset_password_step3.html')
 
 
-import logging
-
 logger = logging.getLogger(__name__)
 
 def book_list(request):
     books = Book.objects.all()
     logger.debug(f"Number of books retrieved: {books.count()}")
+
+    # debug author 
+    authors = [book.authors for book in books]
+    authors_str = ', '.join(authors)
+    #debug books attributes as authors, publisher and published date was coming empty
+    field_names = [field.name for field in Book._meta.get_fields()]
+
+    # Count the unique categories
+    #unique_categories = Book.objects.values_list('category', flat=True).distinct()
+    unique_categories = Book.objects.exclude(category__isnull=True).exclude(category='nan').values_list('category', flat=True).distinct()
+
+    unique_count = unique_categories.count()
+
+    response = f"Number of unique categories: {unique_count}\n"
+    response += "Unique categories:\n"
+    for category in unique_categories:
+        response += f"- {category}\n"
+    #return HttpResponse(response, content_type='text/plain')
+
     return render(request, 'index.html', {'books': books})
+    #return HttpResponse (authors_str)
+    #return HttpResponse(published_dates_str)
+    #return HttpResponse(", ".join(field_names))
+
+
 
 
 

@@ -28,9 +28,9 @@
                 <td>{{ book.isbn }}</td>
                 <td>{{ book.title }}</td>
                 <td>{{ book.subtitle }}</td>
-                <td>{{ book.authors.all|join:", " }}</td>
-                <td>{{ book.publisher.name }}</td>
-                <td>{{ book.published_date }}</td>
+                <td>{{ book.authors}}</td>
+                <td>{{ book.publisher }}</td>
+                <td>{{ book.publish_date }}</td>
                 <td>{{ book.category }}</td>
                 <td>{{ book.distribution_expense }}</td>
             </tr>
