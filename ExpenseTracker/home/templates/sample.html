@@ -223,8 +223,8 @@
             background-color: #f1f1f1;
         }
 
-                /* Profile Page */
-                #profile-page .profile-form {
+        /* Profile Page */
+        #profile-page .profile-form {
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -245,7 +245,6 @@
             border: none;
             cursor: pointer;
         }
-
     </style>
 </head>
 <body>
@@ -255,7 +254,7 @@
         <div class="logo">Books Manager</div>
         <nav>
             <a href="#">Circle Image Here</a>
-            <button>Logged in as : Ledidk</button>
+            <button>Logged in as: Ledidk</button>
         </nav>
     </header>
 
@@ -276,8 +275,8 @@
             </div>
             <!-- Footer -->
             <div id="leftbox-footer">
-                <button>Logged in as</button>
-                <p>ledidk</p>
+                <button>Log out</button>
+                <p>Logged in as: Ledidk</p>
             </div>
         </div>
 
@@ -315,55 +314,50 @@
 
         <!-- Books Page -->
         <div id="books-page" class="content">
-            <h2 class="books-header">Books Page</h2>
-            <div class="books-actions">
-                <button onclick="showUpdateBooks()">Manage Books</button>
-                <input type="text" placeholder="Search by author, title,  or subtitle" style="width: 30%; padding: 10px;"/>
-            </div>
+            <h2 class="books-header">Add Book Page</h2>
 
             <!-- Table Section -->
             <table>
                 <thead>
                     <tr>
-                        <th></th>
                         <th>ISBN</th>
                         <th>Title</th>
                         <th>Subtitle</th>
                         <th>Authors</th>
                         <th>Publisher</th>
                         <th>Published Date</th>
+                        <th>Category</th>
                         <th>
-                            <select class="dropdown">
-                                <option value="">All Categories</option>
-                                <option value="Fiction">Fiction</option>
-                                <option value="Non-Fiction">Non-Fiction</option>
-                                <option value="Science">Science</option>
-                                <option value="Biography">Biography</option>
-                            </select>
+                            <button>Add</button>
                         </th>
-                        <th>Distribution Expense ($)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for book in books %}
                     <tr>
-                        <td><input type="checkbox" name="book_id" value="{{ book.id }}"></td>
-                        <td>{{ book.isbn }}</td>
-                        <td>{{ book.title }}</td>
-                        <td>{{ book.subtitle }}</td>
-                        <td>{{ book.authors }}</td>
-                        <td>{{ book.publisher }}</td>
-                        <td>{{ book.publish_date }}</td>
-                        <td>{{ book.category }}</td>
-                        <td>{{ book.distribution_expense }}</td>
+                        <td><input type="text" placeholder="Enter ISBN"></td>
+                        <td><input type="text" placeholder="Enter Book Title"></td>
+                        <td><input type="text" placeholder="Enter Subtitle"></td>
+                        <td><input type="text" placeholder="Enter Author"></td>
+                        <td><input type="text" placeholder="Enter Publisher"></td>
+                        <td><input type="date"></td>
+                        <td>
+                            <select class="dropdown">
+                                <option value="">All Categories</option>
+                                <option value="1">Category 1</option>
+                                <option value="2">Category 2</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button>Save</button>
+                        </td>
                     </tr>
-                    {% endfor %}
                 </tbody>
             </table>
         </div>
 
+
         <!-- Update Books Page -->
-        <div id="update-books-page" class="content">
+        <div id="add-books-page" class="content">
             <h2 class="books-header">Update Books Page</h2>
             <div class="update-actions">
                 <button onclick="updateBook()">Update Book</button>
@@ -401,49 +395,25 @@
                 </div>
             </div>
         </div>
-
     </div>
 
+    <!-- JavaScript -->
     <script>
-        // Function to show the selected page
+        // Function to show selected page
         function showPage(pageId) {
-            // Hide all content sections
-            const contents = document.querySelectorAll('.content');
-            contents.forEach(content => content.classList.remove('active'));
-
-            // Show the selected page
-            document.getElementById(pageId).classList.add('active');
+            const pages = document.querySelectorAll('.content');
+            pages.forEach(page => {
+                page.classList.remove('active'); // Hide all pages
+            });
+            document.getElementById(pageId).classList.add('active'); // Show selected page
         }
 
-        // Function to show the update books page
+                // Function to show the update books page
         function showUpdateBooks() {
             // Hide the books page and show the update books page
-            showPage('update-books-page');
-        }
-
-        // Add event listener for the form submission
-        document.getElementById('update-book-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            // Handle the book update logic here
-            alert('Book updated successfully!');
-            // Reset the form
-            this.reset();
-            // Optionally, show the books page again
-            showPage('books-page');
-        });
-
-        // Function to handle book updates (dummy implementation)
-        function updateBook() {
-            // Logic to update book will go here
-            alert('Book update logic goes here.');
-        }
-
-        // Function to handle book deletions (dummy implementation)
-        function deleteBook() {
-            // Logic to delete book will go here
-            alert('Book deletion logic goes here.');
+            showPage('add-books-page');
+            
         }
     </script>
-
 </body>
 </html>
