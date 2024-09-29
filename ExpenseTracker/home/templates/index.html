@@ -223,6 +223,29 @@
             background-color: #f1f1f1;
         }
 
+                /* Profile Page */
+                #profile-page .profile-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        #profile-page .profile-form input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            width: 30%; /* Reduce input width to 1/3 */
+        }
+
+        #profile-page .profile-form button {
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -367,8 +390,18 @@
         <!-- Profile Page -->
         <div id="profile-page" class="content">
             <h2 class="profile-header">Profile Page</h2>
-            <p>Your profile information goes here.</p>
+            <div class="profile-form">
+                <input type="text" placeholder="Edit Username">
+                <input type="text" placeholder="Edit Email">
+                <input type="password" placeholder="Edit Password">
+                <div>
+                    <button>Save Changes</button>
+                    <button>Cancel</button>
+                    <button>Delete Account</button>
+                </div>
+            </div>
         </div>
+
     </div>
 
     <script>
