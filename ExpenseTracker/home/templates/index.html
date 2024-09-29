@@ -97,12 +97,10 @@
                                 <option value="2">Category 2</option>
                             </select>
                         </th>
-                        <th>
-                            <button>Save Changes</button>
-                        </th>
+                        <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="books-tbody">
                     <tr>
                         <td>123456789</td>
                         <td>Sample Book Title</td>
@@ -112,8 +110,8 @@
                         <td>01/01/2023</td>
                         <td>Fiction</td>
                         <td>
-                            <button>Edit</button>
-                            <button>Delete</button>
+                            <button onclick="editBook(this)">Edit</button>
+                            <button onclick="deleteRow(this)">Delete</button>
                         </td>
                     </tr>
                     <tr>
@@ -125,7 +123,7 @@
                         <td>01/02/2023</td>
                         <td>Non-Fiction</td>
                         <td>
-                            <button>Edit</button>
+                            <button onclick="editBook(this)">Edit</button>
                             <button>Delete</button>
                         </td>
                     </tr>
@@ -133,9 +131,14 @@
             </table>
         </div>
 
+
+
         <!-- Add Books Page Section  -->
         <div id="add-books-page" class="content">
             <h2 class="books-header">Add Book Page</h2>
+            <div class="books-actions">
+                <button onclick="showPage('books-page')">All Books</button>
+            </div>
 
             <!-- Table Section -->
             <table>
@@ -149,12 +152,12 @@
                         <th>Published Date</th>
                         <th>Category</th>
                         <th>
-                            <button>Add</button>
+                            <button type="button" onclick="addBookRow()">Add</button>
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
+                <tbody id="add-books-tbody">
+                    <tr class="add-book-row">
                         <td><input type="text" placeholder="Enter ISBN"></td>
                         <td><input type="text" placeholder="Enter Book Title"></td>
                         <td><input type="text" placeholder="Enter Subtitle"></td>
@@ -169,12 +172,14 @@
                             </select>
                         </td>
                         <td>
-                            <button>Save</button>
+                            <button type="button" onclick="saveBook(this)">Save</button>
+                            <button type="button" onclick="deleteRow(this)">Delete</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
 
 
 
@@ -210,6 +215,100 @@
             // Hide the books page and show the update books page
             showPage('add-books-page');
             
+        }
+
+
+
+        function editBook(button) {
+            // Get the row that contains the clicked edit button
+            const row = button.closest('tr');
+
+            // Toggle edit mode
+            const isEditing = row.classList.contains('editing');
+
+            if (isEditing) {
+                // If in edit mode, save the values
+                saveRow(row);
+            } else {
+                // If not in edit mode, make the fields editable
+                makeRowEditable(row);
+            }
+        }
+
+        function makeRowEditable(row) {
+            row.classList.add('editing');
+
+            // Convert the table cells to input fields for editing
+            const cells = row.querySelectorAll('td');
+            cells.forEach((cell, index) => {
+                if (index < 7) { // Skip the last column with buttons
+                    const cellValue = cell.innerText;
+                    cell.innerHTML = `<input type="text" value="${cellValue}" />`;
+                }
+            });
+
+            // Change the Edit button to "Save"
+            const editButton = row.querySelector('button');
+            editButton.textContent = 'Save';
+        }
+
+        function saveRow(row) {
+            row.classList.remove('editing');
+
+            // Convert the input fields back to text
+            const cells = row.querySelectorAll('td');
+            cells.forEach((cell, index) => {
+                if (index < 7) {
+                    const inputField = cell.querySelector('input');
+                    if (inputField) {
+                        const newValue = inputField.value;
+                        cell.textContent = newValue;
+                    }
+                }
+            });
+
+            // Change the Save button back to "Edit"
+            const editButton = row.querySelector('button');
+            editButton.textContent = 'Edit';
+        }
+
+
+        
+        function addBookRow() {
+            // Get the table body
+            const tableBody = document.getElementById('add-books-tbody');
+
+            // Get the first row (template row) to clone it
+            const firstRow = document.querySelector('.add-book-row');
+
+            if (!firstRow) {
+                console.error("No row to clone.");
+                return;
+            }
+
+            // Clone the first row
+            const newRow = firstRow.cloneNode(true);
+
+            // Clear the values of the input fields in the new row
+            const inputs = newRow.querySelectorAll('input');
+            inputs.forEach(input => input.value = '');
+
+            const selects = newRow.querySelectorAll('select');
+            selects.forEach(select => select.selectedIndex = 0); // Reset the dropdown
+
+            // Make sure the new row is appended to the table body
+            tableBody.appendChild(newRow);
+        }
+
+        function saveBook(button) {
+            // Placeholder function for saving the book data
+            alert("Book details saved!");
+        }
+
+        function deleteRow(button) {
+            // Delete the row containing this button
+            const row = button.parentElement.parentElement;
+            row.remove();
         }
     </script>
 </body>

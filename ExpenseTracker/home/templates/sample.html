@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books Manager</title>
     <style>
-        /* Global reset */
+        /* Global reset now*/
         html, body {
             margin: 0;
             padding: 0;
@@ -150,12 +150,11 @@
             color: #333;
         }
 
-        /* Show the content dynamically */
+
         .active {
             display: block;
         }
 
-        /* Footer inside the leftbox */
         #leftbox-footer {
             text-align: center;
             padding: 10px;
@@ -177,7 +176,6 @@
             font-size: 14px;
         }
 
-        /* Books page header */
         .books-header, .profile-header {
             background-color: #333;
             color: white;
@@ -185,7 +183,6 @@
             text-align: center;
         }
 
-        /* Books Page */
         #books-page .books-actions {
             display: flex;
             justify-content: space-between;
@@ -202,10 +199,22 @@
             cursor: pointer;
         }
 
-        /* Update Books Page */
-        #update-books-page {
-            display: none; /* Initially hidden */
+        #add-books-page .books-actions {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #f9f9f9;
         }
+
+        #add-books-page .books-actions button {
+            padding: 5px 10px; 
+            font-size: 12px; 
+            border: none;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+
 
         table {
             width: 100%;
@@ -312,9 +321,73 @@
             </div>
         </div>
 
-        <!-- Books Page -->
+        <!-- Books Page Section -->
         <div id="books-page" class="content">
+            <h2 class="books-header">Books Page</h2>
+            <div class="books-actions">
+                <button onclick="showUpdateBooks()">Add Book</button>
+                <input type="text" placeholder="Search Books by author, title or subtitle" style="width: 30%; padding: 10px;"/>
+            </div>
+
+            <!-- Table Section -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Title</th>
+                        <th>Subtitle</th>
+                        <th>Authors</th>
+                        <th>Publisher</th>
+                        <th>Published Date</th>
+                        <th>
+                            <select class="dropdown">
+                                <option value="">All Categories</option>
+                                <option value="1">Category 1</option>
+                                <option value="2">Category 2</option>
+                            </select>
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="books-tbody">
+                    <tr>
+                        <td>123456789</td>
+                        <td>Sample Book Title</td>
+                        <td>Subtitle Example</td>
+                        <td>Author Name</td>
+                        <td>Sample Publisher</td>
+                        <td>01/01/2023</td>
+                        <td>Fiction</td>
+                        <td>
+                            <button onclick="editBook(this)">Edit</button>
+                            <button onclick="deleteRow(this)">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>987654321</td>
+                        <td>Another Book Title</td>
+                        <td>Another Subtitle</td>
+                        <td>Another Author</td>
+                        <td>Another Publisher</td>
+                        <td>01/02/2023</td>
+                        <td>Non-Fiction</td>
+                        <td>
+                            <button onclick="editBook(this)">Edit</button>
+                            <button>Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <!-- Add Books Page Section  -->
+        <div id="add-books-page" class="content">
             <h2 class="books-header">Add Book Page</h2>
+            <div class="books-actions">
+                <button onclick="showPage('books-page')">All Books</button>
+            </div>
 
             <!-- Table Section -->
             <table>
@@ -328,12 +401,12 @@
                         <th>Published Date</th>
                         <th>Category</th>
                         <th>
-                            <button>Add</button>
+                            <button type="button" onclick="addBookRow()">Add</button>
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
+                <tbody id="add-books-tbody">
+                    <tr class="add-book-row">
                         <td><input type="text" placeholder="Enter ISBN"></td>
                         <td><input type="text" placeholder="Enter Book Title"></td>
                         <td><input type="text" placeholder="Enter Subtitle"></td>
@@ -348,7 +421,8 @@
                             </select>
                         </td>
                         <td>
-                            <button>Save</button>
+                            <button type="button" onclick="saveBook(this)">Save</button>
+                            <button type="button" onclick="deleteRow(this)">Delete</button>
                         </td>
                     </tr>
                 </tbody>
@@ -356,30 +430,7 @@
         </div>
 
 
-        <!-- Update Books Page -->
-        <div id="add-books-page" class="content">
-            <h2 class="books-header">Update Books Page</h2>
-            <div class="update-actions">
-                <button onclick="updateBook()">Update Book</button>
-                <button onclick="deleteBook()">Delete Book</button>
-            </div>
-            <div>
-                <!-- Update Book Form -->
-                <form id="update-book-form">
-                    <label for="book-isbn">ISBN:</label>
-                    <input type="text" id="book-isbn" placeholder="Enter ISBN" required />
-                    <label for="book-title">Title:</label>
-                    <input type="text" id="book-title" placeholder="Enter Title" required />
-                    <label for="book-authors">Authors:</label>
-                    <input type="text" id="book-authors" placeholder="Enter Authors" required />
-                    <label for="book-publisher">Publisher:</label>
-                    <input type="text" id="book-publisher" placeholder="Enter Publisher" required />
-                    <label for="book-publish-date">Published Date:</label>
-                    <input type="date" id="book-publish-date" required />
-                    <button type="submit">Submit Changes</button>
-                </form>
-            </div>
-        </div>
+
 
         <!-- Profile Page -->
         <div id="profile-page" class="content">
@@ -413,6 +464,100 @@
             // Hide the books page and show the update books page
             showPage('add-books-page');
             
+        }
+
+
+
+        function editBook(button) {
+            // Get the row that contains the clicked edit button
+            const row = button.closest('tr');
+
+            // Toggle edit mode
+            const isEditing = row.classList.contains('editing');
+
+            if (isEditing) {
+                // If in edit mode, save the values
+                saveRow(row);
+            } else {
+                // If not in edit mode, make the fields editable
+                makeRowEditable(row);
+            }
+        }
+
+        function makeRowEditable(row) {
+            row.classList.add('editing');
+
+            // Convert the table cells to input fields for editing
+            const cells = row.querySelectorAll('td');
+            cells.forEach((cell, index) => {
+                if (index < 7) { // Skip the last column with buttons
+                    const cellValue = cell.innerText;
+                    cell.innerHTML = `<input type="text" value="${cellValue}" />`;
+                }
+            });
+
+            // Change the Edit button to "Save"
+            const editButton = row.querySelector('button');
+            editButton.textContent = 'Save';
+        }
+
+        function saveRow(row) {
+            row.classList.remove('editing');
+
+            // Convert the input fields back to text
+            const cells = row.querySelectorAll('td');
+            cells.forEach((cell, index) => {
+                if (index < 7) {
+                    const inputField = cell.querySelector('input');
+                    if (inputField) {
+                        const newValue = inputField.value;
+                        cell.textContent = newValue;
+                    }
+                }
+            });
+
+            // Change the Save button back to "Edit"
+            const editButton = row.querySelector('button');
+            editButton.textContent = 'Edit';
+        }
+
+
+        
+        function addBookRow() {
+            // Get the table body
+            const tableBody = document.getElementById('add-books-tbody');
+
+            // Get the first row (template row) to clone it
+            const firstRow = document.querySelector('.add-book-row');
+
+            if (!firstRow) {
+                console.error("No row to clone.");
+                return;
+            }
+
+            // Clone the first row
+            const newRow = firstRow.cloneNode(true);
+
+            // Clear the values of the input fields in the new row
+            const inputs = newRow.querySelectorAll('input');
+            inputs.forEach(input => input.value = '');
+
+            const selects = newRow.querySelectorAll('select');
+            selects.forEach(select => select.selectedIndex = 0); // Reset the dropdown
+
+            // Make sure the new row is appended to the table body
+            tableBody.appendChild(newRow);
+        }
+
+        function saveBook(button) {
+            // Placeholder function for saving the book data
+            alert("Book details saved!");
+        }
+
+        function deleteRow(button) {
+            // Delete the row containing this button
+            const row = button.parentElement.parentElement;
+            row.remove();
         }
     </script>
 </body>

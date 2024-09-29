@@ -143,12 +143,11 @@
             color: #333;
         }
 
-        /* Show the content dynamically */
+
         .active {
             display: block;
         }
 
-        /* Footer inside the leftbox */
         #leftbox-footer {
             text-align: center;
             padding: 10px;
@@ -170,7 +169,6 @@
             font-size: 14px;
         }
 
-        /* Books page header */
         .books-header, .profile-header {
             background-color: #333;
             color: white;
@@ -178,7 +176,6 @@
             text-align: center;
         }
 
-        /* Books Page */
         #books-page .books-actions {
             display: flex;
             justify-content: space-between;
@@ -195,10 +192,22 @@
             cursor: pointer;
         }
 
-        /* Update Books Page */
-        #update-books-page {
-            display: none; /* Initially hidden */
+        #add-books-page .books-actions {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #f9f9f9;
         }
+
+        #add-books-page .books-actions button {
+            padding: 5px 10px; 
+            font-size: 12px; 
+            border: none;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+
 
         table {
             width: 100%;
