@@ -68,7 +68,7 @@
 
         /* Leftbox (Menu) */
         #leftbox {
-            flex: 0.15; /* Reduced size to half its current size */
+            flex: 0.15;
             padding: 20px;
             background-color: brown;
             color: white;
@@ -104,19 +104,18 @@
             display: flex;
         }
 
-
         /* Middlebox (Dashboard) */
         #middlebox {
-            flex: 3; /* Return this to the original size */
-            padding: 0; /* Remove padding so there's no space around the header */
+            flex: 3; 
+            padding: 0; 
             display: flex;
             flex-direction: column;
         }
 
         /* Rightbox (Display Data) */
         #rightbox {
-            flex: 1.2; /* Same size as before */
-            padding: 0; /* Remove padding */
+            flex: 1.2; 
+            padding: 0; 
             display: flex;
             flex-direction: column;
         }
@@ -124,27 +123,19 @@
         /* Headers inside the boxes */
         .box-header {
             width: 100%;
-            background-color: #333; /* You can adjust this */
+            background-color: #333; 
             color: white;
             text-align: center;
-            padding: 0; /* Set padding to 0 to eliminate any space */
-            margin: 0; /* Set margin to 0 to eliminate any space */
+            padding: 0; 
+            margin: 0; 
             font-size: 18px;
         }
 
         /* Main content inside the middle and right boxes */
         .box-content {
-            flex: 1; /* Fill the remaining space under the header */
-            padding: 20px; /* Maintain padding for content */
-            overflow-y: auto; /* Add scroll if content overflows */
-        }
-
-
-                /* Main content inside the middle and right boxes */
-        .box-content {
-            flex: 1; /* Fill the remaining space under the header */
-            padding: 20px;
-            overflow-y: auto; /* Add scroll if content overflows */
+            flex: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
         }
 
         /* Middlebox styling */
@@ -203,36 +194,35 @@
         }
 
         #books-page .books-actions button {
-            padding: 10px;
-            font-size: 14px;
+            padding: 5px 10px; 
+            font-size: 12px; 
             border: none;
             background-color: #333;
             color: white;
             cursor: pointer;
         }
 
-        /* Profile Page */
-        #profile-page .profile-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 20px;
+        /* Update Books Page */
+        #update-books-page {
+            display: none; /* Initially hidden */
         }
 
-        #profile-page .profile-form input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            font-size: 14px;
+        table {
             width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
 
-        #profile-page .profile-form button {
+        th, td {
             padding: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
-            cursor: pointer;
+            text-align: left;
+            border: 1px solid #ccc;
         }
+
+        th {
+            background-color: #f1f1f1;
+        }
+
     </style>
 </head>
 <body>
@@ -284,19 +274,19 @@
                         and successful.
                     </div>
                 </div>
-        <!-- Rightbox (Display Data) -->
-        <div id="rightbox">
-            <!-- Rightbox Header -->
-            <div class="box-header books-header">
-                Data Title
-            </div>
-            <!-- Rightbox Content -->
-            <div class="box-content">
-                Any geeks can help other geeks by writing
-                articles on the GeeksforGeeks platform, publishing
-                articles after a few review steps.
-            </div>
-        </div>
+                <!-- Rightbox (Display Data) -->
+                <div id="rightbox">
+                    <!-- Rightbox Header -->
+                    <div class="box-header books-header">
+                        Data Title
+                    </div>
+                    <!-- Rightbox Content -->
+                    <div class="box-content">
+                        Any geeks can help other geeks by writing
+                        articles on the GeeksforGeeks platform, publishing
+                        articles after a few review steps.
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -304,37 +294,121 @@
         <div id="books-page" class="content">
             <h2 class="books-header">Books Page</h2>
             <div class="books-actions">
-                <button>Manage Books</button>
-                <button>Search Books</button>
-                <button>Category</button>
+                <button onclick="showUpdateBooks()">Manage Books</button>
+                <input type="text" placeholder="Search Books" style="width: 30%; padding: 10px;"/>
+            </div>
+
+            <!-- Table Section -->
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>ISBN</th>
+                        <th>Title</th>
+                        <th>Subtitle</th>
+                        <th>Authors</th>
+                        <th>Publisher</th>
+                        <th>Published Date</th>
+                        <th>
+                            <select class="dropdown">
+                                <option value="">All Categories</option>
+                                <option value="Fiction">Fiction</option>
+                                <option value="Non-Fiction">Non-Fiction</option>
+                                <option value="Science">Science</option>
+                                <option value="Biography">Biography</option>
+                            </select>
+                        </th>
+                        <th>Distribution Expense ($)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td><input type="checkbox" name="book_id" value="{{ book.id }}"></td>
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.subtitle }}</td>
+                        <td>{{ book.authors }}</td>
+                        <td>{{ book.publisher }}</td>
+                        <td>{{ book.publish_date }}</td>
+                        <td>{{ book.category }}</td>
+                        <td>{{ book.distribution_expense }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Update Books Page -->
+        <div id="update-books-page" class="content">
+            <h2 class="books-header">Update Books Page</h2>
+            <div class="update-actions">
+                <button onclick="updateBook()">Update Book</button>
+                <button onclick="deleteBook()">Delete Book</button>
+            </div>
+            <div>
+                <!-- Update Book Form -->
+                <form id="update-book-form">
+                    <label for="book-isbn">ISBN:</label>
+                    <input type="text" id="book-isbn" placeholder="Enter ISBN" required />
+                    <label for="book-title">Title:</label>
+                    <input type="text" id="book-title" placeholder="Enter Title" required />
+                    <label for="book-authors">Authors:</label>
+                    <input type="text" id="book-authors" placeholder="Enter Authors" required />
+                    <label for="book-publisher">Publisher:</label>
+                    <input type="text" id="book-publisher" placeholder="Enter Publisher" required />
+                    <label for="book-publish-date">Published Date:</label>
+                    <input type="date" id="book-publish-date" required />
+                    <button type="submit">Submit Changes</button>
+                </form>
             </div>
         </div>
 
         <!-- Profile Page -->
         <div id="profile-page" class="content">
             <h2 class="profile-header">Profile Page</h2>
-            <div class="profile-form">
-                <input type="text" placeholder="Edit Username">
-                <input type="email" placeholder="Edit Email">
-                <input type="password" placeholder="Edit Password">
-                <button>Update Profile</button>
-                <button>Logout</button>
-                <button>Upload Profile Picture</button>
-            </div>
+            <p>Your profile information goes here.</p>
         </div>
     </div>
 
-    <!-- JavaScript to Handle Page Navigation -->
     <script>
-        // Function to switch between pages
+        // Function to show the selected page
         function showPage(pageId) {
             // Hide all content sections
-            document.querySelectorAll('.content').forEach(section => {
-                section.classList.remove('active');
-            });
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => content.classList.remove('active'));
 
-            // Show the selected content section
+            // Show the selected page
             document.getElementById(pageId).classList.add('active');
+        }
+
+        // Function to show the update books page
+        function showUpdateBooks() {
+            // Hide the books page and show the update books page
+            showPage('update-books-page');
+        }
+
+        // Add event listener for the form submission
+        document.getElementById('update-book-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Handle the book update logic here
+            alert('Book updated successfully!');
+            // Reset the form
+            this.reset();
+            // Optionally, show the books page again
+            showPage('books-page');
+        });
+
+        // Function to handle book updates (dummy implementation)
+        function updateBook() {
+            // Logic to update book will go here
+            alert('Book update logic goes here.');
+        }
+
+        // Function to handle book deletions (dummy implementation)
+        function deleteBook() {
+            // Logic to delete book will go here
+            alert('Book deletion logic goes here.');
         }
     </script>
 

@@ -12,19 +12,27 @@
     <table>
         <thead>
             <tr>
+                <th></th>
                 <th>ISBN</th>
                 <th>Title</th>
                 <th>Subtitle</th>
                 <th>Authors</th>
                 <th>Publisher</th>
                 <th>Published Date</th>
-                <th>Category</th>
+                <th> <select class="dropdown">
+                    <option value="">All Categories</option>
+                    <option value="Fiction">Fiction</option>
+                    <option value="Non-Fiction">Non-Fiction</option>
+                    <option value="Science">Science</option>
+                    <option value="Biography">Biography</option>
+                </select></th>
                 <th>Distribution Expense ($)</th>
             </tr>
         </thead>
         <tbody>
             {% for book in books %}
             <tr>
+                <td><input type="checkbox" name="book_id" value="{{ book.id }}"></td
                 <td>{{ book.isbn }}</td>
                 <td>{{ book.title }}</td>
                 <td>{{ book.subtitle }}</td>
