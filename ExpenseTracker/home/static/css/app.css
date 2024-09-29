@@ -247,3 +247,28 @@
             border: none;
             cursor: pointer;
         }
+
+        .profile-form {
+            width: 40%;
+            margin: 0 auto;
+        }
+
+        .profile-field {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .profile-field label {
+            width: 100px;
+        }
+
+        .profile-field input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .profile-actions {
+            display: flex;
+            justify-content: space-between;
+        }

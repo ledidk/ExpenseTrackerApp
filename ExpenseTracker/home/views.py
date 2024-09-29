@@ -50,7 +50,9 @@ def home(request):
         books = Book.objects.all()
         return render(request, 'index.html', {'books': books})
     
+    #return render(request, '404.html')
     return render(request, 'index.html')
+
 
 
 def handleSignupStep1(request):
