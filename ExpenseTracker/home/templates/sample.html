@@ -223,8 +223,8 @@
             background-color: #f1f1f1;
         }
 
-        /* Profile Page */
-        #profile-page .profile-form {
+                /* Profile Page */
+                #profile-page .profile-form {
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -245,6 +245,7 @@
             border: none;
             cursor: pointer;
         }
+
     </style>
 </head>
 <body>
@@ -254,7 +255,7 @@
         <div class="logo">Books Manager</div>
         <nav>
             <a href="#">Circle Image Here</a>
-            <button>Logged in as: Ledidk</button>
+            <button>Logged in as : Ledidk</button>
         </nav>
     </header>
 
@@ -275,8 +276,8 @@
             </div>
             <!-- Footer -->
             <div id="leftbox-footer">
-                <button>Log out</button>
-                <p>Logged in as: Ledidk</p>
+                <button>Logged in as</button>
+                <p>ledidk</p>
             </div>
         </div>
 
@@ -316,14 +317,15 @@
         <div id="books-page" class="content">
             <h2 class="books-header">Books Page</h2>
             <div class="books-actions">
-                <button onclick="showUpdateBooks()">Add Book</button>
-                <input type="text" placeholder="Search Books by author, title or subtitle" style="width: 30%; padding: 10px;"/>
+                <button onclick="showUpdateBooks()">Manage Books</button>
+                <input type="text" placeholder="Search by author, title,  or subtitle" style="width: 30%; padding: 10px;"/>
             </div>
 
             <!-- Table Section -->
             <table>
                 <thead>
                     <tr>
+                        <th></th>
                         <th>ISBN</th>
                         <th>Title</th>
                         <th>Subtitle</th>
@@ -333,44 +335,56 @@
                         <th>
                             <select class="dropdown">
                                 <option value="">All Categories</option>
-                                <option value="1">Category 1</option>
-                                <option value="2">Category 2</option>
+                                <option value="Fiction">Fiction</option>
+                                <option value="Non-Fiction">Non-Fiction</option>
+                                <option value="Science">Science</option>
+                                <option value="Biography">Biography</option>
                             </select>
                         </th>
-                        <th>
-                            <button>Save Changes</button>
-                        </th>
+                        <th>Distribution Expense ($)</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for book in books %}
                     <tr>
-                        <td>123456789</td>
-                        <td>Sample Book Title</td>
-                        <td>Subtitle Example</td>
-                        <td>Author Name</td>
-                        <td>Sample Publisher</td>
-                        <td>01/01/2023</td>
-                        <td>Fiction</td>
-                        <td>
-                            <button>Edit</button>
-                            <button>Delete</button>
-                        </td>
+                        <td><input type="checkbox" name="book_id" value="{{ book.id }}"></td>
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.subtitle }}</td>
+                        <td>{{ book.authors }}</td>
+                        <td>{{ book.publisher }}</td>
+                        <td>{{ book.publish_date }}</td>
+                        <td>{{ book.category }}</td>
+                        <td>{{ book.distribution_expense }}</td>
                     </tr>
-                    <tr>
-                        <td>987654321</td>
-                        <td>Another Book Title</td>
-                        <td>Another Subtitle</td>
-                        <td>Another Author</td>
-                        <td>Another Publisher</td>
-                        <td>01/02/2023</td>
-                        <td>Non-Fiction</td>
-                        <td>
-                            <button>Edit</button>
-                            <button>Delete</button>
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
+        </div>
+
+        <!-- Update Books Page -->
+        <div id="update-books-page" class="content">
+            <h2 class="books-header">Update Books Page</h2>
+            <div class="update-actions">
+                <button onclick="updateBook()">Update Book</button>
+                <button onclick="deleteBook()">Delete Book</button>
+            </div>
+            <div>
+                <!-- Update Book Form -->
+                <form id="update-book-form">
+                    <label for="book-isbn">ISBN:</label>
+                    <input type="text" id="book-isbn" placeholder="Enter ISBN" required />
+                    <label for="book-title">Title:</label>
+                    <input type="text" id="book-title" placeholder="Enter Title" required />
+                    <label for="book-authors">Authors:</label>
+                    <input type="text" id="book-authors" placeholder="Enter Authors" required />
+                    <label for="book-publisher">Publisher:</label>
+                    <input type="text" id="book-publisher" placeholder="Enter Publisher" required />
+                    <label for="book-publish-date">Published Date:</label>
+                    <input type="date" id="book-publish-date" required />
+                    <button type="submit">Submit Changes</button>
+                </form>
+            </div>
         </div>
 
         <!-- Profile Page -->
@@ -387,24 +401,49 @@
                 </div>
             </div>
         </div>
+
     </div>
 
-    <!-- JavaScript -->
     <script>
-        // Function to show selected page
+        // Function to show the selected page
         function showPage(pageId) {
-            const pages = document.querySelectorAll('.content');
-            pages.forEach(page => {
-                page.classList.remove('active'); // Hide all pages
-            });
-            document.getElementById(pageId).classList.add('active'); // Show selected page
+            // Hide all content sections
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Show the selected page
+            document.getElementById(pageId).classList.add('active');
         }
 
         // Function to show the update books page
         function showUpdateBooks() {
-            const updateBooksPage = document.getElementById('update-books-page');
-            updateBooksPage.style.display = 'block';
+            // Hide the books page and show the update books page
+            showPage('update-books-page');
+        }
+
+        // Add event listener for the form submission
+        document.getElementById('update-book-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Handle the book update logic here
+            alert('Book updated successfully!');
+            // Reset the form
+            this.reset();
+            // Optionally, show the books page again
+            showPage('books-page');
+        });
+
+        // Function to handle book updates (dummy implementation)
+        function updateBook() {
+            // Logic to update book will go here
+            alert('Book update logic goes here.');
+        }
+
+        // Function to handle book deletions (dummy implementation)
+        function deleteBook() {
+            // Logic to delete book will go here
+            alert('Book deletion logic goes here.');
         }
     </script>
+
 </body>
 </html>

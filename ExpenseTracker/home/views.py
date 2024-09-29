@@ -386,10 +386,11 @@ def book_list(request):
         response += f"- {category}\n"
     #return HttpResponse(response, content_type='text/plain')
 
-    return render(request, 'books.html', {'books': books})
+    #return render(request, 'books.html', {'books': books})
     #return HttpResponse (authors_str)
     #return HttpResponse(published_dates_str)
     #return HttpResponse(", ".join(field_names))
+    return render(request, 'sample.html', {'books': books})
 
 
 
