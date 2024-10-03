@@ -9,49 +9,24 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import UserProfile
 from .models import Book
+from django.http import JsonResponse
+from django.db.models import Q
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect
+from .models import Book
+from .forms import BookForm
+from django.views.decorators.csrf import csrf_exempt
+import json
 
-
-"""
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
-from django.http import HttpResponseNotFound
-
-
-class YourProtectedView(LoginRequiredMixin, TemplateView):
-    template_name = 'your_template.html'
-    login_url = '/login/'  # You can specify the URL to redirect to
-
-def custom_page_not_found_view(request, exception):
-    return redirect('login')  # Redirect to the login page or any other view
-
-def custom_404(request, exception):
-    return render(request, '404.html', status=404)
-
-"""
-
-
-
-"""
-# Home view that checks if the user is logged in
-def home(request):
-    # Check if user is authenticated
-    if request.user.is_authenticated:
-        # If the user is logged in, redirect to the home page (index.html)
-        template = loader.get_template('index.html')
-        return HttpResponse(template.render())
-    else:
-        # If the user is not logged in, redirect to the login page 
-        return redirect('handlelogin')
-"""
 
 def home(request):
     if request.session.has_key('is_logged'):
      # return redirect('/index')
         books = Book.objects.all()
-        return render(request, 'index.html', {'books': books})
+        return HttpResponse("you are logged in")
     
     #return render(request, '404.html')
-    return render(request, 'index.html')
+    return HttpResponse("you are not logged in")
 
 
 
@@ -366,33 +341,103 @@ def reset_password_step3(request):
 
 logger = logging.getLogger(__name__)
 
+
 def book_list(request):
+    sort_by = request.GET.get('sort_by', 'title')
+    search_query = request.GET.get('search', '')
+
+    # Start by querying all books
     books = Book.objects.all()
-    logger.debug(f"Number of books retrieved: {books.count()}")
 
-    # debug author 
-    authors = [book.authors for book in books]
-    authors_str = ', '.join(authors)
-    #debug books attributes as authors, publisher and published date was coming empty
-    field_names = [field.name for field in Book._meta.get_fields()]
+    # Apply search filter if search_query is provided
+    if search_query:
+        books = books.filter(
+            Q(title__icontains=search_query) | 
+            Q(subtitle__icontains=search_query) | 
+            Q(authors__icontains=search_query)
+        )
+    
+    # Sort the filtered books
+    books = books.order_by(sort_by)
 
-    # Count the unique categories
-    #unique_categories = Book.objects.values_list('category', flat=True).distinct()
+    # Limit the result to only the first 50 books
+    books = books[:50]
+
+    # Get unique categories
     unique_categories = Book.objects.exclude(category__isnull=True).exclude(category='nan').values_list('category', flat=True).distinct()
 
-    unique_count = unique_categories.count()
+    return render(request, 'index.html', {'books': books, 'unique_categories': unique_categories})
 
-    response = f"Number of unique categories: {unique_count}\n"
-    response += "Unique categories:\n"
-    for category in unique_categories:
-        response += f"- {category}\n"
-    #return HttpResponse(response, content_type='text/plain')
 
-    #return render(request, 'books.html', {'books': books})
-    #return HttpResponse (authors_str)
-    #return HttpResponse(published_dates_str)
-    #return HttpResponse(", ".join(field_names))
-    return render(request, 'sample.html', {'books': books})
+def edit_book(request, book_id):
+    # Retrieve the specific book by its ID
+    book = get_object_or_404(Book, id=book_id)
+
+    if request.method == 'POST':
+        # Bind the submitted data to the form
+        form = BookForm(request.POST, instance=book)
+        
+        # Check if the form is valid
+        if form.is_valid():
+            # Save the changes to the book
+            form.save()
+            
+            # Redirect or return success response after saving
+            return redirect('book_list')  # Redirect to the book list view or a success page
+        else:
+            return HttpResponse("Invalid form data", status=400)
+    else:
+        # If not POST, display the form with the existing book data
+        form = BookForm(instance=book)
+
+    return render(request, 'edit_book.html', {'form': form, 'book': book})
+
+def delete_book(request, book_id):
+    if request.method == 'DELETE':
+        book = Book.objects.get(pk=book_id)
+        book.delete()
+        return JsonResponse({'success': True})
+
+@csrf_exempt  # 
+def add_book(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        # Create a new book instance
+        book = Book(
+            isbn=data['isbn'],
+            title=data['title'],
+            subtitle=data['subtitle'],
+            authors=data['authors'],
+            publisher=data['publisher'],
+            publish_date=data['publish_date'],
+            category=data['category'],
+            distribution_expense=data['distribution_expense'],
+        )
+        # Save the book to the database
+        book.save()
+        return JsonResponse({'success': True, 'message': 'Book added successfully!'})
+    return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
