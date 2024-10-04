@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Manager</title>
+    <link rel="stylesheet" href="{% static 'css/books.css' %}">
+    <script src="{% static 'js/main.js' %}"></script>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">Books Manager</div>
+        <nav>
+            <a href="#">Circle Image Here</a>
+            <button>Logged in as: Ledidk</button>
+        </nav>
+    </header>
+
+    <!-- Main Content Section -->
+    <div id="main-content">
+        <!-- Leftbox (Menu) -->
+        <div id="leftbox">
+            <div>
+                <button class="menu-button" onclick="showPage('dashboard-page')">
+                    <i>🏠</i> Dashboard
+                </button>
+                <button class="menu-button" onclick="showPage('books-page')">
+                    <i>📚</i> Books
+                </button>
+                <button class="menu-button" onclick="showPage('profile-page')">
+                    <i>👤</i> Profile
+                </button>
+            </div>
+            <!-- Footer -->
+            <div id="leftbox-footer">
+                <button>Log out</button>
+                <p>Logged in as: Ledidk</p>
+            </div>
+        </div>
+        <!-- Profile Page -->
+        <div id="profile-page" class="content">
+            <h2 class="profile-header">Profile Page</h2>
+            <div class="profile-form">
+
+                <!-- Username Field -->
+                <div class="profile-field">
+                    <label>Username:</label>
+                    <input type="text" id="username" value="JohnDoe123" disabled>
+                    <button type="button" onclick="toggleEdit('username', this)">Edit</button>
+                </div>
+
+                <!-- Email Field -->
+                <div class="profile-field">
+                    <label>Email:</label>
+                    <input type="text" id="email" value="john.doe@example.com" disabled>
+                    <button type="button" onclick="toggleEdit('email', this)">Edit</button>
+                </div>
+
+                <!-- Password Field -->
+                <div class="profile-field">
+                    <label>Password:</label>
+                    <input type="password" id="password" value="password123" disabled>
+                    <button type="button" onclick="toggleEdit('password', this)">Edit</button>
+                </div>
+
+                <!-- Save and Cancel Buttons -->
+                <div class="profile-actions">
+                    <button type="button" onclick="saveChanges()">Save Changes</button>
+                    <button type="button" onclick="cancelChanges()">Cancel</button>
+                    <button type="button" onclick="deleteAccount()">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script> </script>
+</body>
+
+</html>

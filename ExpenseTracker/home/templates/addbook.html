@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Manager</title>
+    <link rel="stylesheet" href="{% static 'css/books.css' %}">
+    <script src="{% static 'js/main.js' %}"></script>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">Books Manager</div>
+        <nav>
+            <a href="#">Circle Image Here</a>
+            <button>Logged in as: Ledidk</button>
+        </nav>
+    </header>
+
+    <!-- Main Content Section -->
+    <div id="main-content">
+        <!-- Leftbox (Menu) -->
+        <div id="leftbox">
+            <div>
+                <button class="menu-button" onclick="showPage('dashboard-page')">
+                    <i>🏠</i> Dashboard
+                </button>
+                <button class="menu-button" onclick="showPage('books-page')">
+                    <i>📚</i> Books
+                </button>
+                <button class="menu-button" onclick="showPage('profile-page')">
+                    <i>👤</i> Profile
+                </button>
+            </div>
+            <!-- Footer -->
+            <div id="leftbox-footer">
+                <button>Log out</button>
+                <p>Logged in as: Ledidk</p>
+            </div>
+        </div>
+
+        <!-- Add Books Page Section -->
+        <div id="add-books-page" class="content">
+            <h2 class="books-header">Add Book Page</h2>
+            <div class="books-actions">
+                <button onclick="showPage('books-page')">All Books</button>
+            </div>
+
+            <!-- Table Section -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Title</th>
+                        <th>Subtitle</th>
+                        <th>Authors</th>
+                        <th>Publisher</th>
+                        <th>Published Date</th>
+                        <th>Category</th>
+                        <th>Expense</th>
+                        <th>
+                            <button type="button" onclick="addBookRow()">Add</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="add-books-tbody">
+                    <tr class="add-book-row">
+                        <td><input type="text" placeholder="Enter ISBN"></td>
+                        <td><input type="text" placeholder="Enter Book Title"></td>
+                        <td><input type="text" placeholder="Enter Subtitle"></td>
+                        <td><input type="text" placeholder="Enter Author"></td>
+                        <td><input type="text" placeholder="Enter Publisher"></td>
+                        <td><input type="date"></td>
+                        <td>
+                            <select class="dropdown">
+                                <option value="">All Categories</option>
+                                <option value="Fiction">Fiction</option>
+                                <option value="Non-Fiction">Non-Fiction</option>
+                                <option value="Science">Science</option>
+                                <!-- Add more categories as needed -->
+                            </select>
+                        </td>
+                        <td><input type="number" placeholder="Expense"></td>
+                        <td>
+                            <button type="button" onclick="saveBook(this)">Save</button>
+                            <button type="button" onclick="deleteRow(this)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script></script>
+</body>
+
+</html>

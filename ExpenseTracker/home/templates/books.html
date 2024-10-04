@@ -1,53 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Books List</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Books Manager</title>
+    <link rel="stylesheet" href="{% static 'css/books.css' %}">
+    <script src="{% static 'js/main.js' %}"></script>
+    <style>
+
+    </style>
 </head>
+
 <body>
-    <h1>Books Distribution Expenses</h1>
-    <table>
-        <thead>
-            <tr>
-                <th></th>
-                <th>ISBN</th>
-                <th>Title</th>
-                <th>Subtitle</th>
-                <th>Authors</th>
-                <th>Publisher</th>
-                <th>Published Date</th>
-                <th> <select class="dropdown">
-                    <option value="">All Categories</option>
-                    <option value="Fiction">Fiction</option>
-                    <option value="Non-Fiction">Non-Fiction</option>
-                    <option value="Science">Science</option>
-                    <option value="Biography">Biography</option>
-                </select></th>
-                <th>Distribution Expense ($)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for book in books %}
-            <tr>
-                <td><input type="checkbox" name="book_id" value="{{ book.id }}"></td
-                <td>{{ book.isbn }}</td>
-                <td>{{ book.title }}</td>
-                <td>{{ book.subtitle }}</td>
-                <td>{{ book.authors}}</td>
-                <td>{{ book.publisher }}</td>
-                <td>{{ book.publish_date }}</td>
-                <td>{{ book.category }}</td>
-                <td>{{ book.distribution_expense }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8">No books available.</td>
-            </tr>
-            {% endfor %}
-        </tbody>        
-    </table>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">Books Manager</div>
+        <nav>
+            <a href="#">Circle Image Here</a>
+            <button>Logged in as: Ledidk</button>
+        </nav>
+    </header>
+
+    <div id="loading-spinner" style="display: none;">
+        <p>Loading data...</p>
+    </div>
+
+    <!-- Main Content Section -->
+    <div id="main-content">
+        <!-- Leftbox (Menu) -->
+        <div id="leftbox">
+            <div>
+                <button class="menu-button" onclick="showPage('dashboard-page')">
+                    <i>🏠</i> Dashboard
+                </button>
+                <button class="menu-button" onclick="showPage('books-page')">
+                    <i>📚</i> Books
+                </button>
+                <button class="menu-button" onclick="showPage('profile-page')">
+                    <i>👤</i> Profile
+                </button>
+            </div>
+            <!-- Footer -->
+            <div id="leftbox-footer">
+                <button>Log out</button>
+                <p>Logged in as: Ledidk</p>
+            </div>
+        </div>
+
+        <!-- Books Page Section -->
+        <div id="books-page" class="content">
+            <h2 class="books-header">Books Page</h2>
+            <div class="books-actions">
+                <button onclick="showUpdateBooks()">Add Book</button>
+                <input type="text" id="book-search" placeholder="Search Books by author, title or subtitle"
+                    oninput="searchBooks(this.value)" style="width: 30%; padding: 10px;" />
+            </div>
+
+            <!-- Table Section -->
+            <table>
+                <thead>
+                    <tr>
+                        <th><a href="?sort_by=isbn">ISBN</a></th>
+                        <th><a href="?sort_by=title">Title</a></th>
+                        <th><a href="?sort_by=subtitle">Subtitle</a></th>
+                        <th><a href="?sort_by=authors">Authors</a></th>
+                        <th><a href="?sort_by=publisher">Publisher</a></th>
+                        <th><a href="?sort_by=publish_date">Published Date</a></th>
+                        <th>
+                            <select id="category-filter" onchange="filterByCategory(this.value)">
+                                <option value="">All Categories</option>
+                                {% for category in unique_categories %}
+                                <option value="{{ category }}">{{ category }}</option>
+                                {% endfor %}
+                            </select>
+                        </th>
+                        <th><a href="?sort_by=distribution_expense">Expense</a></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="books-tbody">
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.subtitle }}</td>
+                        <td>{{ book.authors}}</td>
+                        <td>{{ book.publisher }}</td>
+                        <td>{{ book.publish_date }}</td>
+                        <td>{{ book.category }}</td>
+                        <td>{{ book.distribution_expense }}</td>
+                        <td>
+                            <button onclick="editBook(this)">Edit</button>
+                            <button onclick="deleteRow(this)">Delete</button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">No books available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <script> </script>
+
 </body>
+
 </html>
