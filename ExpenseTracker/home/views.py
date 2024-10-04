@@ -26,7 +26,7 @@ def home(request):
         return HttpResponse("you are logged in")
     
     #return render(request, '404.html')
-    return HttpResponse("you are not logged in")
+    return render(request, 'index.html')
 
 
 
@@ -366,7 +366,7 @@ def book_list(request):
     # Get unique categories
     unique_categories = Book.objects.exclude(category__isnull=True).exclude(category='nan').values_list('category', flat=True).distinct()
 
-    return render(request, 'index.html', {'books': books, 'unique_categories': unique_categories})
+    return render(request, 'books.html', {'books': books, 'unique_categories': unique_categories})
 
 
 def edit_book(request, book_id):
@@ -397,7 +397,9 @@ def delete_book(request, book_id):
         book = Book.objects.get(pk=book_id)
         book.delete()
         return JsonResponse({'success': True})
-
+    
+def user_profile(request):
+    return render(request, 'profile.html')
 @csrf_exempt  # 
 def add_book(request):
     if request.method == 'POST':
@@ -416,7 +418,8 @@ def add_book(request):
         # Save the book to the database
         book.save()
         return JsonResponse({'success': True, 'message': 'Book added successfully!'})
-    return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
+    #return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
+    return render(request, 'addbook.html')
 
 
 

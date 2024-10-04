@@ -26,15 +26,15 @@
         <!-- Leftbox (Menu) -->
         <div id="leftbox">
             <div>
-                <button class="menu-button" onclick="showPage('dashboard-page')">
+                <a href="{% url 'home' %}"><button class="menu-button">
                     <i>🏠</i> Dashboard
-                </button>
-                <button class="menu-button" onclick="showPage('books-page')">
+                </button></a>
+                <a href="{% url 'book_list' %}"><button class="menu-button">
                     <i>📚</i> Books
-                </button>
-                <button class="menu-button" onclick="showPage('profile-page')">
+                </button></a>
+                <a href="{% url 'user_profile' %}"><button class="menu-button">
                     <i>👤</i> Profile
-                </button>
+                </button></a>
             </div>
             <!-- Footer -->
             <div id="leftbox-footer">
@@ -74,165 +74,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Books Page Section -->
-        <div id="books-page" class="content">
-            <h2 class="books-header">Books Page</h2>
-            <div class="books-actions">
-                <button onclick="showUpdateBooks()">Add Book</button>
-                <input type="text" id="book-search" placeholder="Search Books by author, title or subtitle" oninput="searchBooks(this.value)" style="width: 30%; padding: 10px;"/>
-            </div>
-
-            <!-- Table Section -->
-            <table>
-                <thead>
-                    <tr>
-                        <th><a href="?sort_by=isbn">ISBN</a></th>
-                        <th><a href="?sort_by=title">Title</a></th>
-                        <th><a href="?sort_by=subtitle">Subtitle</a></th>
-                        <th><a href="?sort_by=authors">Authors</a></th>
-                        <th><a href="?sort_by=publisher">Publisher</a></th>
-                        <th><a href="?sort_by=publish_date">Published Date</a></th>
-                        <th>
-                            <select id="category-filter" onchange="filterByCategory(this.value)">
-                                <option value="">All Categories</option>
-                                {% for category in unique_categories %}
-                                    <option value="{{ category }}">{{ category }}</option>
-                                {% endfor %}
-                            </select>
-                        </th>
-                        <th><a href="?sort_by=distribution_expense">Expense</a></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="books-tbody">
-                    {% for book in books %}
-                    <tr>
-                        <td>{{ book.isbn }}</td>
-                        <td>{{ book.title }}</td>
-                        <td>{{ book.subtitle }}</td>
-                        <td>{{ book.authors}}</td>
-                        <td>{{ book.publisher }}</td>
-                        <td>{{ book.publish_date }}</td>
-                        <td>{{ book.category }}</td>
-                        <td>{{ book.distribution_expense }}</td>
-                        <td>
-                            <button onclick="editBook(this)">Edit</button>
-                            <button onclick="deleteRow(this)">Delete</button>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="8">No books available.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-
-
-        <!-- Add Books Page Section -->
-        <div id="add-books-page" class="content">
-            <h2 class="books-header">Add Book Page</h2>
-            <div class="books-actions">
-                <button onclick="showPage('books-page')">All Books</button>
-            </div>
-
-            <!-- Table Section -->
-            <table>
-                <thead>
-                    <tr>
-                        <th>ISBN</th>
-                        <th>Title</th>
-                        <th>Subtitle</th>
-                        <th>Authors</th>
-                        <th>Publisher</th>
-                        <th>Published Date</th>
-                        <th>Category</th>
-                        <th>Expense</th>
-                        <th>
-                            <button type="button" onclick="addBookRow()">Add</button>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody id="add-books-tbody">
-                    <tr class="add-book-row">
-                        <td><input type="text" placeholder="Enter ISBN"></td>
-                        <td><input type="text" placeholder="Enter Book Title"></td>
-                        <td><input type="text" placeholder="Enter Subtitle"></td>
-                        <td><input type="text" placeholder="Enter Author"></td>
-                        <td><input type="text" placeholder="Enter Publisher"></td>
-                        <td><input type="date"></td>
-                        <td>
-                            <select class="dropdown">
-                                <option value="">All Categories</option>
-                                <option value="Fiction">Fiction</option>
-                                <option value="Non-Fiction">Non-Fiction</option>
-                                <option value="Science">Science</option>
-                                <!-- Add more categories as needed -->
-                            </select>
-                        </td>
-                        <td><input type="number" placeholder="Expense"></td>
-                        <td>
-                            <button type="button" onclick="saveBook(this)">Save</button>
-                            <button type="button" onclick="deleteRow(this)">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Profile Page -->
-        <div id="profile-page" class="content">
-            <h2 class="profile-header">Profile Page</h2>
-            <div class="profile-form">
-
-                <!-- Username Field -->
-                <div class="profile-field">
-                    <label>Username:</label>
-                    <input type="text" id="username" value="JohnDoe123" disabled>
-                    <button type="button" onclick="toggleEdit('username', this)">Edit</button>
-                </div>
-
-                <!-- Email Field -->
-                <div class="profile-field">
-                    <label>Email:</label>
-                    <input type="text" id="email" value="john.doe@example.com" disabled>
-                    <button type="button" onclick="toggleEdit('email', this)">Edit</button>
-                </div>
-
-                <!-- Password Field -->
-                <div class="profile-field">
-                    <label>Password:</label>
-                    <input type="password" id="password" value="password123" disabled>
-                    <button type="button" onclick="toggleEdit('password', this)">Edit</button>
-                </div>
-
-                <!-- Save and Cancel Buttons -->
-                <div class="profile-actions">
-                    <button type="button" onclick="saveChanges()">Save Changes</button>
-                    <button type="button" onclick="cancelChanges()">Cancel</button>
-                    <button type="button" onclick="deleteAccount()">Delete Account</button>
-                </div>
-            </div>
-        </div>
-
-
     </div>
-
-    <!-- JavaScript -->
-    <script>
-
-
-    </script>
-    <!-- Add a spinner to indicate loading -->
-<div id="loading-spinner" style="display: none;">
-    <p>Loading data...</p>
-</div>
-
-<div id="content-container" class="content">
-    <!-- Your content here -->
-</div>
 </body>
 </html>

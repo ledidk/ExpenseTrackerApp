@@ -32,15 +32,15 @@
         <!-- Leftbox (Menu) -->
         <div id="leftbox">
             <div>
-                <button class="menu-button" onclick="showPage('dashboard-page')">
+                <a href="{% url 'home' %}"><button class="menu-button">
                     <i>🏠</i> Dashboard
-                </button>
-                <button class="menu-button" onclick="showPage('books-page')">
+                </button></a>
+                <a href="{% url 'book_list' %}"><button class="menu-button">
                     <i>📚</i> Books
-                </button>
-                <button class="menu-button" onclick="showPage('profile-page')">
+                </button></a>
+                <a href="{% url 'user_profile' %}"><button class="menu-button">
                     <i>👤</i> Profile
-                </button>
+                </button></a>
             </div>
             <!-- Footer -->
             <div id="leftbox-footer">
@@ -53,7 +53,7 @@
         <div id="books-page" class="content">
             <h2 class="books-header">Books Page</h2>
             <div class="books-actions">
-                <button onclick="showUpdateBooks()">Add Book</button>
+                <a href="{% url 'add_book' %}"><button>Add Book</button></a>
                 <input type="text" id="book-search" placeholder="Search Books by author, title or subtitle"
                     oninput="searchBooks(this.value)" style="width: 30%; padding: 10px;" />
             </div>

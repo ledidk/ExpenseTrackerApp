@@ -70,6 +70,10 @@
             justify-content: space-between;
         }
 
+        #leftbox a{
+            text-decoration: none;
+        }
+
         .menu-button {
             display: flex;
             align-items: center;
@@ -89,7 +93,7 @@
         .content {
             flex: 1;
             padding: 20px;
-            display: none; /* Hide by default */
+            display: flex; /* Hide by default */
         }
 
         .dashboard-layout {
@@ -168,11 +172,33 @@
             font-size: 14px;
         }
 
+        #books-page {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px; /* Add spacing between header and table */
+        }
+
+        #profile-page {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px; /* Add spacing between header and table */
+        }
+
+        #add-books-page{
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px; /* Add spacing between header and table */
+        }
+
         .books-header, .profile-header {
             background-color: #333;
             color: white;
             padding: 10px;
             text-align: center;
+            text-align: center;
+            margin-bottom: 10px; /* Adds space below the header */
+            font-size: 24px;
+            font-weight: bold;
         }
 
         #books-page .books-actions {
