@@ -5,7 +5,7 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>Edit Profile</title>
     <link rel="stylesheet" href="{% static 'css/books.css' %}">
     <script src="{% static 'js/main.js' %}"></script>
     <style>
@@ -45,8 +45,11 @@
             </div>
         </div>
         <!-- Profile Page -->
+        {% extends 'base.html' %}
+
+        {% block content %}
         <div id="profile-page" class="content">
-            <h2 class="profile-header">Profile Page</h2>
+            <h2 class="profile-header">Edit Profile</h2>
             <form method="POST" action="{% url 'edit_profile' %}">
                 {% csrf_token %}
                 <!-- Username Field -->
@@ -77,27 +80,9 @@
                 </div>
             </form>
         </div>
-        
+        {% endblock %}
     </div>
     <script> 
-        function toggleEdit(fieldId, button) {
-            const field = document.getElementById(fieldId);
-            if (field.disabled) {
-                field.disabled = false;
-                button.textContent = 'Done';
-            } else {
-                field.disabled = true;
-                button.textContent = 'Edit';
-            }
-        }
-
-        function cancelChanges() {
-            // Reload the page to discard changes
-            window.location.reload();
-        }
-
-
-
     </script>
 </body>
 

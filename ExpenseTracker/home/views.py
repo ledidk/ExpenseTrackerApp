@@ -21,8 +21,7 @@ from datetime import datetime, timedelta
 from django.db.models import Sum
 from django.utils import timezone
 
-
-# Fetch chart data for all categories and timeframe
+ 
 def get_chart_data(request):
     timeframe = request.GET.get('timeframe', 6)  # Default to 6 months
     
@@ -60,19 +59,17 @@ def get_chart_data(request):
     return JsonResponse(data)
 
 
-# Fetch details for a specific category
+
 def get_category_details(request):
     category = request.GET.get('category', None)
     
-    # Filter books by the provided category
     books = Book.objects.filter(category=category)
 
-    # Get the top 3 books by distribution expense instead of expense
-    top_books = books.order_by('-distribution_expense')[:3]  # Updated field name here
 
-    # Prepare your response data
+    top_books = books.order_by('-distribution_expense')[:3]  
+
     response_data = {
-        'top_books': [book.title for book in top_books],  # or any other attributes you want
+        'top_books': [book.title for book in top_books],  
     }
 
     return JsonResponse(response_data)
@@ -530,7 +527,33 @@ def add_book(request):
 
 
 
+@login_required  # Ensure the user is logged in
+def edit_profile(request):
+    user = request.user  # Get the current logged-in user
 
+    if request.method == 'POST':
+        # Get the form data
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # Update user information
+        if username:
+            user.username = username
+        if email:
+            user.email = email
+        if password:
+            user.set_password(password)  # Make sure to hash the password
+
+        try:
+            user.save()  # Save the user object with updated data
+            messages.success(request, 'Your profile was updated successfully.')
+            return redirect('user_profile')  # Redirect to the profile page
+        except Exception as e:
+            messages.error(request, 'There was an error updating your profile.')
+
+    # Render the profile edit page
+    return render(request, 'edit_profile.html', {'user': user})
 
 
 

@@ -28,4 +28,7 @@ urlpatterns = [
 
     path('api/books/chart_data', views.get_chart_data, name='get_chart_data'),
     path('api/books/category_details', views.get_category_details, name='get_category_details'),
+
+    path('profile/', views.user_profile, name='user_profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
 ]
