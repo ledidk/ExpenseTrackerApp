@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{% static 'css/books.css' %}">
     <script src="{% static 'js/main.js' %}"></script>
     <style>
-    
     </style>
 </head>
 <body>
@@ -46,6 +45,7 @@
         <!-- Dashboard Page with Middle and Right Boxes -->
         <div id="dashboard-page" class="content active">
             <div class="dashboard-layout">
+                <!-- Middlebox -->
                 <div id="middlebox">
                     <!-- Middlebox Header -->
                     <div class="box-header books-header">
@@ -53,27 +53,103 @@
                     </div>
                     <!-- Middlebox Content -->
                     <div class="box-content">
-                        The course focuses on various MCQ's & Coding
-                        questions likely to be asked in interviews.
-                        Make your upcoming placement season efficient
-                        and successful.
+                        <select id="timeframeDropdown" class="dropdown">
+                            <option value="6">Last 6 months</option>
+                            <option value="12">Last 12 months</option>
+                            <option value="18">Last 18 months</option>
+                            <option value="24">Last 24 months</option>
+                        </select>
+        
+                        <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
                     </div>
                 </div>
-                <!-- Rightbox (Display Data) -->
+                <!-- Rightbox -->
                 <div id="rightbox">
-                    <!-- Rightbox Header -->
                     <div class="box-header books-header">
                         Data Title
                     </div>
-                    <!-- Rightbox Content -->
-                    <div class="box-content">
-                        Any geeks can help other geeks by writing
-                        articles on the GeeksforGeeks platform, publishing
-                        articles after a few review steps.
+                    <div id="categoryDetails" class="box-content">
+                        Select a category on the chart to view details here.
                     </div>
                 </div>
             </div>
         </div>
+        
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const timeframeDropdown = document.getElementById("timeframeDropdown");
+            const categoryDetailsDiv = document.getElementById("categoryDetails");
+
+            let xCategories = [];
+            let yCategoryExpenses = [];
+
+            function fetchChartData(timeframe) {
+                fetch(`/api/books/chart_data?timeframe=${timeframe}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update chart data
+                        xCategories = data.categories;
+                        yCategoryExpenses = data.expenses;
+                        updateChart(xCategories, yCategoryExpenses);
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }
+
+            function updateChart(labels, data) {
+                const chart = new Chart("myChart", {
+                    type: "pie",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            backgroundColor: [
+                                "#b91d47", "#00aba9", "#2b5797", "#e8c3b9", "#1e7145",
+                                "#ff5733", "#f4a261", "#6a0dad", "#ffc300", "#581845", "#3498db"
+                            ],
+                            data: data
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: "Book Expense"
+                        },
+                        onClick: function (event, elements) {
+                            if (elements.length) {
+                                const clickedIndex = elements[0]._index;
+                                const clickedCategory = labels[clickedIndex];
+                                displayCategoryDetails(clickedCategory);
+                            }
+                        }
+                    }
+                });
+            }
+
+            function displayCategoryDetails(category) {
+                fetch(`/api/books/category_details?category=${category}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        categoryDetailsDiv.innerHTML = `
+                            <h3>Category: ${category}</h3>
+                            <p>Total Books: ${data.total_books}</p>
+                            <p>Top 3 Books:</p>
+                            <ul>
+                                ${data.top_books.map(book => `<li>${book.title}</li>`).join('')}
+                            </ul>
+                            <p>Total Expense: ${data.total_expense}</p>
+                        `;
+                    })
+                    .catch(error => console.error('Error fetching category details:', error));
+            }
+
+            // Fetch initial data on load
+            fetchChartData(timeframeDropdown.value);
+
+            // Update chart when timeframe is selected
+            timeframeDropdown.addEventListener("change", function () {
+                fetchChartData(this.value);
+            });
+        });
+    </script>
 </body>
 </html>

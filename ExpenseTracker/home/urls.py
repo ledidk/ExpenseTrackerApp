@@ -24,4 +24,8 @@ urlpatterns = [
     path('reset-password-step1/', views.reset_password_step1, name='reset_password_step1'),
     path('reset-password-step2/', views.reset_password_step2, name='reset_password_step2'),
     path('reset-password-step3/', views.reset_password_step3, name='reset_password_step3'),
+
+
+    path('api/books/chart_data', views.get_chart_data, name='get_chart_data'),
+    path('api/books/category_details', views.get_category_details, name='get_category_details'),
 ]

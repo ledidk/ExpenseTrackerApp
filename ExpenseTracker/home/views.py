@@ -17,8 +17,45 @@ from .models import Book
 from .forms import BookForm
 from django.views.decorators.csrf import csrf_exempt
 import json
+from datetime import datetime, timedelta
+from django.db.models import Sum
 
 
+
+
+
+def get_chart_data(request):
+    timeframe = request.GET.get('timeframe', 6)  # Default to 6 months
+
+    # Filter books by the timeframe (e.g., last 'timeframe' months)
+    books = Book.objects.filter(published_date__gte=timezone.now() - timezone.timedelta(weeks=int(timeframe)*4))
+
+    categories = books.values_list('category', flat=True).distinct()
+    expenses = [books.filter(category=category).aggregate(Sum('expense'))['expense__sum'] for category in categories]
+
+    data = {
+        'categories': list(categories),
+        'expenses': expenses,
+    }
+
+    return JsonResponse(data)
+
+def get_category_details(request):
+    category = request.GET.get('category')
+
+    books = Book.objects.filter(category=category)
+    total_books = books.count()
+    top_books = books.order_by('-expense')[:3]
+    total_expense = books.aggregate(Sum('expense'))['expense__sum']
+
+    data = {
+        'total_books': total_books,
+        'top_books': list(top_books.values('title', 'expense')),
+        'total_expense': total_expense,
+    }
+
+    return JsonResponse(data)
+"""
 def home(request):
     if request.session.has_key('is_logged'):
      # return redirect('/index')
@@ -27,6 +64,48 @@ def home(request):
     
     #return render(request, '404.html')
     return render(request, 'index.html')
+
+"""
+
+# View to render the dashboard page
+def home(request):
+    return render(request, 'index.html')
+
+# API endpoint to fetch filtered data for the chart
+def fetch_chart_data(request):
+    # Get the duration from the request (e.g., 6 months, 12 months)
+    duration = request.GET.get('timeFrame', 'all')
+
+    # Determine the date range based on selected duration
+    today = datetime.today()
+    
+    if duration == '6':
+        start_date = today - timedelta(days=180)
+    elif duration == '12':
+        start_date = today - timedelta(days=365)
+    elif duration == '18':
+        start_date = today - timedelta(days=547)
+    elif duration == '24':
+        start_date = today - timedelta(days=730)
+    else:
+        start_date = None  # Select all data
+
+    # Filter books based on the selected duration
+    if start_date:
+        books = Book.objects.filter(published_date__gte=start_date)
+    else:
+        books = Book.objects.all()
+
+    # Prepare data for the chart
+    categories = books.values_list('category', flat=True).distinct()
+    total_expenses = [books.filter(category=category).aggregate(total_expense=Sum('expense'))['total_expense'] for category in categories]
+
+    # Send the data back as JSON
+    return JsonResponse({
+        'categories': list(categories),
+        'total_expenses': total_expenses
+    })
+
 
 
 
@@ -366,7 +445,12 @@ def book_list(request):
     # Get unique categories
     unique_categories = Book.objects.exclude(category__isnull=True).exclude(category='nan').values_list('category', flat=True).distinct()
 
+    uniqueOutput = "";
+    for category in unique_categories:
+        uniqueOutput += "<option value='" + category + "'>" + category + "</option>"
+
     return render(request, 'books.html', {'books': books, 'unique_categories': unique_categories})
+    #return HttpResponse(uniqueOutput);
 
 
 def edit_book(request, book_id):
