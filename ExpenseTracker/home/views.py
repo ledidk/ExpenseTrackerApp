@@ -19,42 +19,64 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from datetime import datetime, timedelta
 from django.db.models import Sum
+from django.utils import timezone
 
 
-
-
-
+# Fetch chart data for all categories and timeframe
 def get_chart_data(request):
     timeframe = request.GET.get('timeframe', 6)  # Default to 6 months
+    
+    # Calculate the date range based on the timeframe
+    start_date = timezone.now() - timezone.timedelta(weeks=int(timeframe) * 4)
 
-    # Filter books by the timeframe (e.g., last 'timeframe' months)
-    books = Book.objects.filter(published_date__gte=timezone.now() - timezone.timedelta(weeks=int(timeframe)*4))
+    # Filter books based on the selected timeframe
+    books = Book.objects.filter(publish_date__gte=start_date)
 
+    # Get distinct categories
     categories = books.values_list('category', flat=True).distinct()
-    expenses = [books.filter(category=category).aggregate(Sum('expense'))['expense__sum'] for category in categories]
+
+    # Get total expenses for each category
+    expenses = []
+    for category in categories:
+        # Filter books by category before slicing
+        category_books = books.filter(category=category)
+        total_expense = category_books.aggregate(Sum('distribution_expense'))['distribution_expense__sum']
+        expenses.append(total_expense)
+
+    # Now limit the books to the first 100 for any other purpose
+    books = books[:100]
+
+    # Calculate total books and expenses for all categories
+    total_books = books.count()
+    total_expense = books.aggregate(Sum('distribution_expense'))['distribution_expense__sum']
 
     data = {
         'categories': list(categories),
         'expenses': expenses,
+        'total_books': total_books,   # Total books for all categories
+        'total_expense': total_expense  # Total expense for all categories
     }
 
     return JsonResponse(data)
 
+
+# Fetch details for a specific category
 def get_category_details(request):
-    category = request.GET.get('category')
-
+    category = request.GET.get('category', None)
+    
+    # Filter books by the provided category
     books = Book.objects.filter(category=category)
-    total_books = books.count()
-    top_books = books.order_by('-expense')[:3]
-    total_expense = books.aggregate(Sum('expense'))['expense__sum']
 
-    data = {
-        'total_books': total_books,
-        'top_books': list(top_books.values('title', 'expense')),
-        'total_expense': total_expense,
+    # Get the top 3 books by distribution expense instead of expense
+    top_books = books.order_by('-distribution_expense')[:3]  # Updated field name here
+
+    # Prepare your response data
+    response_data = {
+        'top_books': [book.title for book in top_books],  # or any other attributes you want
     }
 
-    return JsonResponse(data)
+    return JsonResponse(response_data)
+
 """
 def home(request):
     if request.session.has_key('is_logged'):
