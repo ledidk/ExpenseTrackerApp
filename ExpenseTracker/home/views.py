@@ -88,7 +88,9 @@ def home(request):
 
 # View to render the dashboard page
 def home(request):
-    return render(request, 'index.html')
+    if request.session.has_key('is_logged'):
+        return render(request, 'index.html')
+    return render(request, 'login.html')
 
 # API endpoint to fetch filtered data for the chart
 def fetch_chart_data(request):
@@ -436,9 +438,7 @@ def reset_password_step2(request):
 def reset_password_step3(request):
     return render(request, 'reset_password_step3.html')
 
-
 logger = logging.getLogger(__name__)
-
 
 def book_list(request):
     sort_by = request.GET.get('sort_by', 'title')
@@ -470,7 +470,6 @@ def book_list(request):
 
     return render(request, 'books.html', {'books': books, 'unique_categories': unique_categories})
     #return HttpResponse(uniqueOutput);
-
 
 def edit_book(request, book_id):
     # Retrieve the specific book by its ID
@@ -523,8 +522,6 @@ def add_book(request):
         return JsonResponse({'success': True, 'message': 'Book added successfully!'})
     #return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
     return render(request, 'addbook.html')
-
-
 
 
 @login_required  # Ensure the user is logged in
