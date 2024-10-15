@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let yCategoryExpenses = [];
 
     // Function to fetch and update chart data
-// Function to fetch and update chart data
+    // Function to fetch and update chart data
     function fetchChartData(timeframe) {
         console.log("Fetching chart data for timeframe:", timeframe); // Log the selected timeframe
 
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             
     
-// Function to update the chart
+   // Function to update the chart
     function updateChart(labels, data) {
         console.log("Updating chart with labels and data:", labels, data); // Log labels and data before updating the chart
 
@@ -108,4 +108,13 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Timeframe changed to:", this.value); // Log the new timeframe
         fetchChartData(this.value);
     });
+
+
+
+
+
+
+
+    // end 
 });
+

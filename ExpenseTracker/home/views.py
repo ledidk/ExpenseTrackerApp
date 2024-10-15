@@ -127,9 +127,6 @@ def fetch_chart_data(request):
         'total_expenses': total_expenses
     })
 
-
-
-
 def handleSignupStep1(request):
     # Retrieve data from the session, if available, to prepopulate the form
     uname = request.session.get('uname', '')

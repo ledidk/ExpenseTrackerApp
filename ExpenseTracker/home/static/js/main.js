@@ -106,7 +106,7 @@ function toggleEdit(fieldId, button) {
 // Save Changes Function (placeholder)
 function saveChanges() {
   alert("Changes saved successfully!");
-  // Add logic to send data to the server or update the profile info
+  //logic to send data to the server or update the profile info
 }
 
 // Cancel Changes Function (placeholder)
@@ -118,7 +118,7 @@ function cancelChanges() {
 // Delete Account Function (placeholder)
 function deleteAccount() {
   if (confirm("Are you sure you want to delete your account?")) {
-    // Add logic to delete the account
+    // logic to delete the account
     alert("Account deleted.");
   }
 }
@@ -193,7 +193,6 @@ function saveBook(button) {
     })
     .then((data) => {
       alert("Book added successfully!");
-      // Optionally, you could clear the input fields after successful addition
       row.reset();
     })
     .catch((error) => {
@@ -280,7 +279,7 @@ function renderData(data) {
   });
 }
 
-// Example usage: Call fetchData with your API URL
+// Call fetchData with your API URL
 window.addEventListener("load", () => {
   fetchData("https://api.example.com/data"); // Replace with your actual API URL
 });
